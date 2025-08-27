@@ -1,4 +1,5 @@
-﻿using MatchTickets.Domain.ValueObjects;
+﻿using MatchTickets.Domain.Enums;
+using MatchTickets.Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -13,15 +14,13 @@ namespace MatchTickets.Domain.Entities
         [Key]
         public int UserId { get; set; }
 
-        public int Dni { get; set; }
+        public string Password{ get; set; }
 
         public string FullName { get; set; }
 
-        public string PhoneNumber { get; set; }
+        public Email Correo { get; set; }
 
-        public int Age { get; set; }
-
-        public Email Correo { get; set; }  
+        public UserType UserType { get; set; }
     }
 
 }
