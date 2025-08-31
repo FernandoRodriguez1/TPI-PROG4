@@ -8,7 +8,10 @@ namespace MatchTickets.Domain.ValueObjects
 {
     public class Email
     {
-        public string Value { get; }
+        public string Value { get; private set; }  // EF Core necesita poder setear la propiedad
+
+        // Constructor vacío para EF Core
+        private Email() { }
 
         public Email(string value)
         {
@@ -20,4 +23,5 @@ namespace MatchTickets.Domain.ValueObjects
 
         public override string ToString() => Value;
     }
+
 }

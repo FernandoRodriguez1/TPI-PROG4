@@ -21,10 +21,12 @@ namespace MatchTickets.Domain.Entities
 
         public DateOnly ExpirationDate { get; set; }
 
-        public int UserId { get; set; }
+        public int ClientId { get; set; }
+        public Client Client { get; set; }
 
-        [ForeignKey(nameof(UserId))]
-        public User User { get; set; }
+
+        public int ClubId { get; set; }
+        public Club Club {  get; set; }
 
     }
 }

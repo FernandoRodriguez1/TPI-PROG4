@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace MatchTickets.Domain.Entities
 {
-    public class User
+    public abstract class User
     {
         [Key]
         public int UserId { get; set; }
@@ -18,7 +18,7 @@ namespace MatchTickets.Domain.Entities
 
         public string FullName { get; set; }
 
-        public Email Correo { get; set; }
+        public Email Email { get; set; }
 
         public UserType UserType { get; set; }
     }

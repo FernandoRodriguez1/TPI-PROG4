@@ -24,5 +24,7 @@ namespace MatchTickets.Domain.Entities
 
         public List<MembershipCard> MembershipCards { get; set; }
 
+        public List<SoccerMatch> SoccerMatches { get; set; }
+
     }
 }

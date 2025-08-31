@@ -19,13 +19,13 @@ namespace MatchTickets.Application.Services
         public async Task AddAdminAsync(AdminDTO adminDto)
         {
             var user = _mapper.Map<AdminDTO>(adminDto); 
-            await _userRepository.AddAsync(adminDto);
+            //await _userRepository.AddAsync(adminDto);
         }
 
         public async Task AddClientAsync(Client client)
         {
             var user = _mapper.Map<User>(client); 
-            await _userRepository.AddAsync(client);
+            //await _userRepository.AddAsync(client);
         }
 
         public async Task DeleteUserAsync(int id)
