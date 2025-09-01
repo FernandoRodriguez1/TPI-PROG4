@@ -2,7 +2,8 @@
 using MatchTickets.Application.DTOs;
 using MatchTickets.Application.Interfaces;
 using MatchTickets.Domain.Entities;
-
+using MatchTickets.Domain.Interfaces;
+using MatchTickets.Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,47 +16,53 @@ namespace MatchTickets.Application.Services
     {
 
         private readonly IMapper _mapper;
+        private readonly IUserRepository _userRepository;
+
+        public UserService(IUserRepository userRepository, IMapper mapper)
+        {
+            _mapper = mapper;
+            _userRepository = userRepository;
+        }
 
         public async Task AddAdminAsync(AdminDTO adminDto)
         {
-            var user = _mapper.Map<AdminDTO>(adminDto); 
-            //await _userRepository.AddAsync(adminDto);
+            var admin = _mapper.Map<Admin>(adminDto);
+            await _userRepository.AddAdminAsync(admin);
         }
 
-        public async Task AddClientAsync(Client client)
+
+        public async Task AddClientAsync(ClientDTO clientDto)
         {
-            var user = _mapper.Map<User>(client); 
-            //await _userRepository.AddAsync(client);
+            var user = _mapper.Map<Client>(clientDto); 
+            await _userRepository.AddClientAsync(user);
+            
         }
 
-        public async Task DeleteUserAsync(int id)
+        public Task DeleteClientAsync(int id)
         {
-            throw new NotImplementedException();
+            return _userRepository.DeleteClientAsync(id);
         }
 
-        public async Task<IEnumerable<User>> GetAdminsAsync()
+        public Task<IEnumerable<User>> GetAdminsAsync()
         {
-            throw new NotImplementedException();
+            return _userRepository.GetAdminsAsync();
         }
 
-        public async Task<IEnumerable<User>> GetAllUsersAsync()
+
+        public Task<IEnumerable<User>> GetClientsAsync()
         {
-            throw new NotImplementedException();
+            return _userRepository.GetClientsAsync();
         }
 
-        public async Task<IEnumerable<User>> GetClientsAsync()
+
+        public Task<User?> GetUserByEmailAsync(Email email)
         {
-            throw new NotImplementedException();
+            return _userRepository.GetUserByEmailAsync(email);
         }
 
-        public async Task<User?> GetUserByIdAsync(int id)
+        public Task<User?> GetUserByIdAsync(int id)
         {
-            throw new NotImplementedException();
-        }
-
-        public async Task<User?> GetUserByNameAsync(string name)
-        {
-            throw new NotImplementedException();
+            return _userRepository.GetUserByIdAsync(id);
         }
     }
 }

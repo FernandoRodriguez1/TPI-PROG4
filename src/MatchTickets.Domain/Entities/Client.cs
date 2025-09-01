@@ -10,28 +10,20 @@ namespace MatchTickets.Domain.Entities
 {
     public class Client : User
     {
-        private string v;
-        private Email email;
-
-        public Client() : base()
+        public Client()
         {
             UserType = UserType.Client;
-        }
-
-        public Client(string v, Email email)
-        {
-            this.v = v;
-            this.email = email;
+            Tickets = new List<Ticket>();
         }
 
         public int Age { get; set; }
         public int PhoneNumber { get; set; }
         public int Dni { get; set; }
 
-        public List<Ticket> Tickets { get; set; }
+        public ICollection<Ticket> Tickets { get; set; }
 
         public int MembershipCardID { get; set; }
         public MembershipCard MembershipCard { get; set; }
-
     }
+
 }

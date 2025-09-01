@@ -16,7 +16,7 @@ namespace MatchTickets.Domain.Entities
 
         public string Password{ get; set; }
 
-        public string FullName { get; set; }
+        public string UserName { get; set; }
 
         public Email Email { get; set; }
 

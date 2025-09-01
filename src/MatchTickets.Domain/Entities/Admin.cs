@@ -5,18 +5,10 @@ namespace MatchTickets.Domain.Entities
 {
     public class Admin : User
     {
-        private string v;
-        private Email email;
-
-        public Admin() : base()
+        public Admin()
         {
-          UserType = UserType.Admin;
-        }
-
-        public Admin(string v, Email email)
-        {
-            this.v = v;
-            this.email = email;
+            UserType = UserType.Admin;
         }
     }
+
 }
