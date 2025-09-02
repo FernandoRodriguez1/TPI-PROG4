@@ -11,10 +11,10 @@ namespace MatchTickets.Application.Interfaces
 {
     public interface IUserService
     {
-        Task<IEnumerable<User>> GetAdminsAsync();
-        Task<IEnumerable<User>> GetClientsAsync();
-        Task<User?> GetUserByIdAsync(int id);
-        Task<User?> GetUserByEmailAsync(Email email);
+        Task<IEnumerable<AdminDTO>> GetAdminsAsync();
+        Task<IEnumerable<ClientDTO>> GetClientsAsync();
+        Task<ClientDTO> GetClientByIdAsync(int id);
+        Task<ClientDTO> GetClientByEmailAsync(Email email);
         Task AddClientAsync(ClientDTO clientDto);
         Task AddAdminAsync(AdminDTO adminDto); 
         Task DeleteClientAsync(int id);

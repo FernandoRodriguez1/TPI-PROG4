@@ -16,22 +16,62 @@ public class UserController : ControllerBase
     {  
         _userService = userService;
     }
-
-    [HttpGet("get-user-by-email")]
-    public async Task<IActionResult> GetUserByEmail([FromQuery] string email)
+    [HttpGet("admins")]
+    public async Task<IActionResult> GetAdmins()
     {
-        var user = await _userService.GetUserByEmailAsync(new Email(email));
+        var admins = await _userService.GetAdminsAsync();
+        if (!admins.Any())
+            return NotFound("No admins created.");
+
+        return Ok(admins);
+    }
+    [HttpGet("clients")]
+    public async Task<IActionResult> GetClients()
+    {
+        var clients = await _userService.GetClientsAsync();
+        if (!clients.Any())
+            return NotFound("No clients created.");
+
+        return Ok(clients);
+    }
+    [HttpGet("user-by-id")]
+    public async Task<IActionResult> GetUserById([FromQuery] int id)
+    {
+        var user = await _userService.GetClientByIdAsync(id);
         if (user is null)
-            return NotFound();
+            return NotFound("User not defined");
 
         return Ok(user);
     }
-    [HttpPost("add-user")]
+
+    [HttpGet("user-by-email")]
+    public async Task<IActionResult> GetUserByEmail([FromQuery] string email)
+    {
+        var user = await _userService.GetClientByEmailAsync(new Email(email));
+        if (user is null)
+            return NotFound("Email not found");
+
+        return Ok(user);
+    }
+    [HttpPost("client")]
     public async Task<IActionResult> AddClient([FromBody] ClientDTO clientDto)
     {
         await _userService.AddClientAsync(clientDto);
         return Ok("Client created successfully");
     }
 
+    [HttpPost("admin")]
+    public async Task<IActionResult> AddAdmin([FromBody] AdminDTO adminDto)
+    {
+        await _userService.AddAdminAsync(adminDto);
+        return Ok("Admin created successfully");
+    }
+
+    [HttpDelete("client")]
+    public async Task<IActionResult> DeleteClient([FromQuery] int clientid)
+    {
+        await _userService.DeleteClientAsync(clientid);
+        return Ok("Client deleted successfully");
+    }
 }
 

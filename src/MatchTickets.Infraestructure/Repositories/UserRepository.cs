@@ -48,7 +48,7 @@ namespace MatchTickets.Infraestructure.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<User>> GetAdminsAsync()
+        public async Task<IEnumerable<Admin>> GetAdminsAsync()
         {
             // Filtra solo los Admin usando el tipo concreto
             return await _context.Users
@@ -61,7 +61,7 @@ namespace MatchTickets.Infraestructure.Repositories
             //                      .ToListAsync();
         }
 
-        public async Task<IEnumerable<User>> GetClientsAsync()
+        public async Task<IEnumerable<Client>> GetClientsAsync()
         {
             // Filtra solo los Client usando el tipo concreto
             return await _context.Users
@@ -74,17 +74,21 @@ namespace MatchTickets.Infraestructure.Repositories
             //                      .ToListAsync();
         }
 
-        public Task<User?> GetUserByEmailAsync(Email email)
+        public Task<Client?> GetClientByEmailAsync(Email email)
         {
             return _context.Users
+                           .OfType<Client>()
                            .SingleOrDefaultAsync(u => u.Email.Value == email.Value);
         }
 
 
-        public async Task<User?> GetUserByIdAsync(int id)
+        public async Task<Client?> GetClientByIdAsync(int id)
         {
-            return await _context.Users.FindAsync(id);
+            return await _context.Users
+                                 .OfType<Client>()       // filtra solo Clients
+                                 .FirstOrDefaultAsync(c => c.UserId == id); // busca por id
         }
+
 
 
     }

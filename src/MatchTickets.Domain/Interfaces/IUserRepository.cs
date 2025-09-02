@@ -11,10 +11,10 @@ namespace MatchTickets.Domain.Interfaces
 {
     public interface IUserRepository
     {
-        Task<IEnumerable<User>> GetAdminsAsync();
-        Task<IEnumerable<User>> GetClientsAsync();
-        Task<User?> GetUserByIdAsync(int id);
-        Task<User?> GetUserByEmailAsync(Email email);
+        Task<IEnumerable<Admin>> GetAdminsAsync();
+        Task<IEnumerable<Client>> GetClientsAsync();
+        Task<Client?> GetClientByIdAsync(int id);
+        Task<Client?> GetClientByEmailAsync(Email email);
         Task AddClientAsync(Client client);
         Task AddAdminAsync(Admin admin);
         Task DeleteAdminAsync(int id);

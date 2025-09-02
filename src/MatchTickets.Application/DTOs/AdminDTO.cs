@@ -9,10 +9,12 @@ namespace MatchTickets.Application.DTOs
 {
     public class AdminDTO
     {
-        public int Dni {  get; set; }
-        public Email Email { get; set; }
-        public string Password{ get; set; }
 
+        public string UserName { get; set; }
+        public string Email { get; set; }
+       
+        public string Password { get; set; }
+       
 
     }
 }

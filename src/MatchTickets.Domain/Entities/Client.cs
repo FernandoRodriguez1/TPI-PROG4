@@ -13,17 +13,18 @@ namespace MatchTickets.Domain.Entities
         public Client()
         {
             UserType = UserType.Client;
-            Tickets = new List<Ticket>();
+            
         }
-
+        
         public int Age { get; set; }
         public int PhoneNumber { get; set; }
         public int Dni { get; set; }
 
-        public ICollection<Ticket> Tickets { get; set; }
+        public ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
+
 
         public int MembershipCardID { get; set; }
-        public MembershipCard MembershipCard { get; set; }
+        public MembershipCard? MembershipCard { get; set; }
     }
 
 }
