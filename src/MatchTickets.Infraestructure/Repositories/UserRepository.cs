@@ -66,9 +66,10 @@ namespace MatchTickets.Infraestructure.Repositories
             // Filtra solo los Client usando el tipo concreto
             return await _context.Users
                                  .OfType<Client>()
+                                 .Include(c => c.MembershipCard)
                                  .ToListAsync();
 
-            // Alternativa usando el discriminador:
+            // Alternativa usando el discriminador:return await _context.Clients
             // return await _context.Users
             //                      .Where(u => u.UserType == UserType.Client)
             //                      .ToListAsync();

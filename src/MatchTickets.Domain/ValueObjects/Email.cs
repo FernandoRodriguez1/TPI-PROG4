@@ -8,9 +8,7 @@ namespace MatchTickets.Domain.ValueObjects
 {
     public class Email
     {
-        public string Value { get; private set; }  // EF Core necesita poder setear la propiedad
-
-        // Constructor vacío para EF Core
+        public string Value { get; private set; } 
         private Email() { }
 
         public Email(string value)

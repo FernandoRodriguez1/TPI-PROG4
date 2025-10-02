@@ -79,12 +79,16 @@ builder.Services.AddAuthentication(options =>
 
 #region
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IClubRepository, ClubRepository>();
+builder.Services.AddScoped<IMembershipCardRepository, MembershipCardRepository>();
 #endregion
 
 #region
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAuthenticateService, AuthenticateService>();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+builder.Services.AddScoped<IClubService , ClubService>();
+builder.Services.AddScoped<IMembershipCardService, MembershipCardService>();
 #endregion
 
 

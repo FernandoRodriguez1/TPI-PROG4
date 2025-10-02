@@ -30,5 +30,19 @@ namespace MatchTickets.Domain.Entities
         public int ClubId { get; set; }
         public Club Club {  get; set; }
 
+
+        private MembershipCard() { } 
+
+        
+        public MembershipCard(int clientId, int clubId, PartnerPlan plan)
+        {
+            MembershipCardNumber = Guid.NewGuid().ToString("N")[..10]; // genera nº único
+            Plan = plan;
+            DischargeDate = DateOnly.FromDateTime(DateTime.UtcNow);
+            ExpirationDate = DateOnly.FromDateTime(DateTime.UtcNow.AddYears(1));
+            ClientId = clientId;
+            ClubId = clubId;
+        }
+
     }
 }

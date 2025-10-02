@@ -55,26 +55,35 @@ namespace MatchTickets.Application.Services
             await _userRepository.AddAdminAsync(admin);
         }
 
-        public async Task AddClientAsync(ClientDTO dto)
+        public async Task AddClientAsync(ClientDTO clientDto)
         {
-            var client = new Client
-            {
-                UserName = dto.UserName,
-                Email = new Email(dto.Email),
-                Age = dto.Age,
-                PhoneNumber = dto.PhoneNumber,
-                Password = dto.Password
-            };
+            if (clientDto == null)
+                throw new ArgumentNullException(nameof(clientDto), "El cliente no puede ser nulo.");
 
+            
+            var client = _mapper.Map<Client>(clientDto);
+
+            
+            client.Password = _passwordHasher.HashPassword(clientDto.Password);
+
+            
             await _userRepository.AddClientAsync(client);
-
         }
 
 
-        public Task DeleteClientAsync(int id)
+
+        public async Task DeleteClientAsync(int id)
         {
-            return _userRepository.DeleteClientAsync(id);
+            var client = await _userRepository.GetClientByIdAsync(id);
+
+            if (client == null)
+            {
+                throw new KeyNotFoundException($"Cliente no encontrado.");
+            }
+
+            await _userRepository.DeleteClientAsync(id);
         }
+
 
         public async Task<IEnumerable<AdminDTO>> GetAdminsAsync()
         {
@@ -92,20 +101,31 @@ namespace MatchTickets.Application.Services
         public User GetUserByEmail(Email email)
         {
             var user = _userRepository.GetUserByEmail(email);
-            if (user == null) return null!;
+            if (user == null)
+            {
+                throw new KeyNotFoundException($"Usuario no encontrado.");
+            }
             return user;
         }
         public async Task<ClientDTO> GetClientByEmailAsync(Email email)
         {
             var user = await _userRepository.GetClientByEmailAsync(email);
-            if (user == null) return null!;
+            if (user == null)
+            {
+                throw new KeyNotFoundException($"Cliente no encontrado.");
+            }
             return ToDto(user);
         }
 
         public async Task<ClientDTO> GetClientByIdAsync(int id)
         {
             var user = await _userRepository.GetClientByIdAsync(id);
-            if (user == null) return null!;
+
+            if (user == null)
+            {
+                throw new KeyNotFoundException($"Cliente no encontrado.");
+            }
+
             return ToDto(user);
         }
 
