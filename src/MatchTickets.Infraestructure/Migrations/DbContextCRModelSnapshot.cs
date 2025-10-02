@@ -60,6 +60,10 @@ namespace MatchTickets.Infraestructure.Migrations
                     b.Property<DateOnly>("ExpirationDate")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("MembershipCardNumber")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("Plan")
                         .HasColumnType("INTEGER");
 
@@ -265,8 +269,7 @@ namespace MatchTickets.Infraestructure.Migrations
 
             modelBuilder.Entity("MatchTickets.Domain.Entities.Client", b =>
                 {
-                    b.Navigation("MembershipCard")
-                        .IsRequired();
+                    b.Navigation("MembershipCard");
 
                     b.Navigation("Tickets");
                 });

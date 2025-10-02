@@ -76,6 +76,7 @@ namespace MatchTickets.Infraestructure.Migrations
                 {
                     MembershipId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    MembershipCardNumber = table.Column<string>(type: "TEXT", nullable: false),
                     Plan = table.Column<int>(type: "INTEGER", nullable: false),
                     DischargeDate = table.Column<DateOnly>(type: "TEXT", nullable: false),
                     ExpirationDate = table.Column<DateOnly>(type: "TEXT", nullable: false),

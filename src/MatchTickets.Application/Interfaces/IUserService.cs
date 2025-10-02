@@ -15,6 +15,8 @@ namespace MatchTickets.Application.Interfaces
         Task<IEnumerable<ClientDTO>> GetClientsAsync();
         Task<ClientDTO> GetClientByIdAsync(int id);
         Task<ClientDTO> GetClientByEmailAsync(Email email);
+
+        public User GetUserByEmail (Email email);
         Task AddClientAsync(ClientDTO clientDto);
         Task AddAdminAsync(AdminDTO adminDto); 
         Task DeleteClientAsync(int id);

@@ -1,20 +1,18 @@
 ﻿using MatchTickets.Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace MatchTickets.Application.DTOs
 {
-    public class UserDTO
+    public class AuthenticationRequestBody
     {
-        public int Id { get; set; }
-        public string UserName { get; set; }
+        [Required]
         public Email Email { get; set; }
-        public int Age { get; set; }
-        public int PhoneNumber { get; set; }
-
-        public string PasswordHash { get; set; }
+        [Required]
+        public string Password { get; set; }
     }
 }

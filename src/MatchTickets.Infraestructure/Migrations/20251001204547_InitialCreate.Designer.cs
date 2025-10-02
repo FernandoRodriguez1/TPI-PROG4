@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MatchTickets.Infraestructure.Migrations
 {
     [DbContext(typeof(DbContextCR))]
-    [Migration("20250901044032_InitialCreate")]
+    [Migration("20251001204547_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -61,6 +61,10 @@ namespace MatchTickets.Infraestructure.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<DateOnly>("ExpirationDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("MembershipCardNumber")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Plan")
@@ -268,8 +272,7 @@ namespace MatchTickets.Infraestructure.Migrations
 
             modelBuilder.Entity("MatchTickets.Domain.Entities.Client", b =>
                 {
-                    b.Navigation("MembershipCard")
-                        .IsRequired();
+                    b.Navigation("MembershipCard");
 
                     b.Navigation("Tickets");
                 });

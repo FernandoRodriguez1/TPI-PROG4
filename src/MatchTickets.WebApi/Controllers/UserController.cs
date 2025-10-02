@@ -2,6 +2,7 @@
 using MatchTickets.Application.Interfaces;
 using MatchTickets.Domain.Entities;
 using MatchTickets.Domain.ValueObjects;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MatchTickets.WebApi.Controllers;
@@ -26,6 +27,7 @@ public class UserController : ControllerBase
         return Ok(admins);
     }
     [HttpGet("clients")]
+    [Authorize]
     public async Task<IActionResult> GetClients()
     {
         var clients = await _userService.GetClientsAsync();

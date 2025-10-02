@@ -17,11 +17,13 @@ namespace MatchTickets.Application.Services
 
         private readonly IMapper _mapper;
         private readonly IUserRepository _userRepository;
+        private readonly IPasswordHasher _passwordHasher;
 
-        public UserService(IUserRepository userRepository, IMapper mapper)
+        public UserService(IUserRepository userRepository, IMapper mapper, IPasswordHasher passwordHasher)
         {
             _mapper = mapper;
             _userRepository = userRepository;
+            _passwordHasher = passwordHasher;
         }
         private ClientDTO ToDto(Client client)
         {
@@ -35,9 +37,21 @@ namespace MatchTickets.Application.Services
                 PhoneNumber = client.PhoneNumber
             };
         }
+
+        private UserDTO UserToDto(User user)
+        {
+            return new UserDTO
+            {
+                UserName = user.UserName,
+                Email = user.Email,
+                Id = user.UserId
+            };
+        }
+
         public async Task AddAdminAsync(AdminDTO adminDto)
         {
             var admin = _mapper.Map<Admin>(adminDto);
+            admin.Password = _passwordHasher.HashPassword(adminDto.Password);
             await _userRepository.AddAdminAsync(admin);
         }
 
@@ -75,7 +89,12 @@ namespace MatchTickets.Application.Services
             return clients.Select(c => ToDto(c));
         }
 
-
+        public User GetUserByEmail(Email email)
+        {
+            var user = _userRepository.GetUserByEmail(email);
+            if (user == null) return null!;
+            return user;
+        }
         public async Task<ClientDTO> GetClientByEmailAsync(Email email)
         {
             var user = await _userRepository.GetClientByEmailAsync(email);

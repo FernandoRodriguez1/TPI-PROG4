@@ -89,6 +89,12 @@ namespace MatchTickets.Infraestructure.Repositories
                                  .FirstOrDefaultAsync(c => c.UserId == id); // busca por id
         }
 
+        public User GetUserByEmail(Email email)
+        {
+            return _context.Users.FirstOrDefault(c => c.Email.Value == email.Value);
+        }
+
+
 
 
     }

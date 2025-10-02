@@ -19,6 +19,7 @@ namespace MatchTickets.Domain.Interfaces
         Task AddAdminAsync(Admin admin);
         Task DeleteAdminAsync(int id);
 
+        public User GetUserByEmail(Email email);
         Task DeleteClientAsync (int id);
 
 
