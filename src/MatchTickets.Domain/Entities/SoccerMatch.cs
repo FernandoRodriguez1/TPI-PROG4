@@ -27,5 +27,9 @@ namespace MatchTickets.Domain.Entities
         public int ClubId { get; set; }
         public Club Club { get; set; }
 
+        [NotMapped]
+        public string? ClubName { get; set; }
+
+
     }
 }

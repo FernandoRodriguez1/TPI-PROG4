@@ -49,11 +49,39 @@ namespace MatchTickets.Infraestructure.Repositories
 
         public async Task<Club?> GetByIdAsync(int clubId)
         {
-            return await _context.Clubs
+            // carga de club con sus relaciones
+            var club = await _context.Clubs
                 .Include(c => c.MembershipCards)
                 .Include(c => c.SoccerMatches)
+                    .ThenInclude(m => m.Tickets)
                 .FirstOrDefaultAsync(c => c.ClubId == clubId);
+
+            if (club == null)
+                return null;
+
+            // calculo de las membership card del club 
+            club.MembershipCount = club.MembershipCards?.Count ?? 0;
+
+            // lleno ClubName y NumberTicketsAvailable en cada partido
+            if (club.SoccerMatches != null)
+            {
+                foreach (var match in club.SoccerMatches)
+                {
+                    match.ClubName = club.ClubName;
+                    match.NumberTicketsAvailable = match.Tickets?.Count(t => t.IsAvailable) ?? 0;
+
+                    //  vacio la referencia al club para evitar ciclos
+                    match.Club = null;
+                }
+            }
+
+            // no necesito las cards completas por eso null
+            club.MembershipCards = null;
+
+            return club;
         }
+
+
 
         public async Task<IEnumerable<SoccerMatch>> GetMatchesAsync(int clubId)
         {

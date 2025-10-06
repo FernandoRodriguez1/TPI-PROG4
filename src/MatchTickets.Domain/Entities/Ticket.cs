@@ -17,14 +17,13 @@ namespace MatchTickets.Domain.Entities
 
         public StadiumSector Sector { get; set; }
 
-        public int ClientId { get; set; }
-        public Client Client { get; set; }
+        public int? ClientId { get; set; } 
+        public Client? Client { get; set; }
 
+        public bool IsAvailable { get; set; } = true; 
 
         public int SoccerMatchId { get; set; }
         public SoccerMatch SoccerMatch { get; set; }
-
-
-
     }
+
 }

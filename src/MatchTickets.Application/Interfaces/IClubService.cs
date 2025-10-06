@@ -12,7 +12,7 @@ namespace MatchTickets.Application.Interfaces
     {
         Task<IEnumerable<ClubDTO>> GetAllAsync();
         Task<Club?> GetByIdAsync(int clubId);
-        Task<IEnumerable<SoccerMatch>> GetMatchesAsync(int clubId);
+        Task<IEnumerable<SoccerMatchDTO>> GetMatchesAsync(int clubId);
         Task<int> GetMembersCountAsync(int clubId);
         Task AddAsync(ClubDTO club);
         Task UpdateAsync(ClubDTO club);

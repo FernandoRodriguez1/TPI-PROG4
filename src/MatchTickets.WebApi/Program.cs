@@ -81,6 +81,7 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IClubRepository, ClubRepository>();
 builder.Services.AddScoped<IMembershipCardRepository, MembershipCardRepository>();
+builder.Services.AddScoped<ISoccerMatchRepository, SoccerMatchRepository>();
 #endregion
 
 #region
@@ -89,6 +90,7 @@ builder.Services.AddScoped<IAuthenticateService, AuthenticateService>();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 builder.Services.AddScoped<IClubService , ClubService>();
 builder.Services.AddScoped<IMembershipCardService, MembershipCardService>();
+builder.Services.AddScoped<ISoccerMatchService, SoccerMatchService>();
 #endregion
 
 

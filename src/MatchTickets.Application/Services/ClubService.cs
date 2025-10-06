@@ -41,15 +41,28 @@ namespace MatchTickets.Application.Services
             return club;
         }
 
-        public async Task<IEnumerable<SoccerMatch>> GetMatchesAsync(int clubId)
+        public async Task<IEnumerable<SoccerMatchDTO>> GetMatchesAsync(int clubId)
         {
             var matches = await _clubRepository.GetMatchesAsync(clubId);
 
             if (!matches.Any())
                 throw new KeyNotFoundException($"No se encontraron partidos para el club con ID {clubId}.");
 
-            return matches;
+            var matchDtos = matches.Select(m => new SoccerMatchDTO
+            {
+                SoccerMatchId = m.SoccerMatchId,
+                DayOfTheMatch = m.DayOfTheMatch,
+                TimeOfTheMatch = m.TimeOfTheMatch,
+                ClubId = m.ClubId,
+                ClubName = m.ClubName,
+                MatchLocation = m.MatchLocation,
+                NumberTicketsAvailable = m.Tickets?.Count(t => t.IsAvailable) ?? 0
+            }).ToList();
+
+            return matchDtos;
         }
+
+
 
         public async Task<int> GetMembersCountAsync(int clubId)
         {

@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MatchTickets.Infraestructure.Migrations
 {
     [DbContext(typeof(DbContextCR))]
-    [Migration("20251001204547_InitialCreate")]
+    [Migration("20251006185750_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -115,7 +115,10 @@ namespace MatchTickets.Infraestructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("ClientId")
+                    b.Property<int?>("ClientId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsAvailable")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Sector")
@@ -219,9 +222,7 @@ namespace MatchTickets.Infraestructure.Migrations
                 {
                     b.HasOne("MatchTickets.Domain.Entities.Client", "Client")
                         .WithMany("Tickets")
-                        .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ClientId");
 
                     b.HasOne("MatchTickets.Domain.Entities.SoccerMatch", "SoccerMatch")
                         .WithMany("Tickets")

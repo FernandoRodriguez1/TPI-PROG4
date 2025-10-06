@@ -107,7 +107,8 @@ namespace MatchTickets.Infraestructure.Migrations
                     TicketId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Sector = table.Column<int>(type: "INTEGER", nullable: false),
-                    ClientId = table.Column<int>(type: "INTEGER", nullable: false),
+                    ClientId = table.Column<int>(type: "INTEGER", nullable: true),
+                    IsAvailable = table.Column<bool>(type: "INTEGER", nullable: false),
                     SoccerMatchId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
@@ -123,8 +124,7 @@ namespace MatchTickets.Infraestructure.Migrations
                         name: "FK_Tickets_Users_ClientId",
                         column: x => x.ClientId,
                         principalTable: "Users",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "UserId");
                 });
 
             migrationBuilder.CreateIndex(

@@ -112,7 +112,10 @@ namespace MatchTickets.Infraestructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("ClientId")
+                    b.Property<int?>("ClientId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsAvailable")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Sector")
@@ -216,9 +219,7 @@ namespace MatchTickets.Infraestructure.Migrations
                 {
                     b.HasOne("MatchTickets.Domain.Entities.Client", "Client")
                         .WithMany("Tickets")
-                        .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ClientId");
 
                     b.HasOne("MatchTickets.Domain.Entities.SoccerMatch", "SoccerMatch")
                         .WithMany("Tickets")
