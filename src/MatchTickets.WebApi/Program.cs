@@ -78,6 +78,7 @@ builder.Services.AddAuthentication(options =>
 });
 
 #region
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IClubRepository, ClubRepository>();
 builder.Services.AddScoped<IMembershipCardRepository, MembershipCardRepository>();

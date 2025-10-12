@@ -70,6 +70,18 @@ namespace MatchTickets.Application.Services
             return count;
         }
 
+       
+        public async Task AddAsync(ClubDTO clubDto)
+        {
+            if (clubDto == null)
+                throw new ArgumentNullException(nameof(clubDto));
+
+            var club = _mapper.Map<Club>(clubDto);
+            await _clubRepository.AddAsync(club);
+            await _clubRepository.SaveChangesAsync();
+        }
+
+       
         public async Task UpdateAsync(ClubDTO clubDto)
         {
             if (clubDto == null)
@@ -79,28 +91,23 @@ namespace MatchTickets.Application.Services
             if (existingClub == null)
                 throw new KeyNotFoundException($"Club con ID {clubDto.ClubId} no encontrado.");
 
+            // actualiza los valores de la entidad existente
             _mapper.Map(clubDto, existingClub);
-            await _clubRepository.UpdateAsync(existingClub);
+            _clubRepository.Update(existingClub);
+            await _clubRepository.SaveChangesAsync();
         }
 
-
+       
         public async Task DeleteAsync(int clubId)
         {
             var club = await _clubRepository.GetByIdAsync(clubId);
             if (club == null)
                 throw new KeyNotFoundException($"Club con ID {clubId} no encontrado.");
 
-            await _clubRepository.DeleteAsync(clubId);
+            _clubRepository.Delete(club);
+            await _clubRepository.SaveChangesAsync();
         }
 
-        public async Task AddAsync(ClubDTO clubDto)
-        {
-            if (clubDto == null)
-                throw new ArgumentNullException(nameof(clubDto));
-            var club = _mapper.Map<Club>(clubDto);
-
-            await _clubRepository.AddAsync(club);
-        }
 
 
     }
