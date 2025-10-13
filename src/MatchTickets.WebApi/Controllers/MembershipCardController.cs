@@ -17,9 +17,10 @@ namespace MatchTickets.WebApi.Controllers
             _membershipService = membershipService;
         }
 
+        
         [HttpPost("join")]
         [Authorize]
-        public IActionResult Join([FromBody] JoinClubRequest request)
+        public async Task<IActionResult> CreateMembershipCard([FromBody] JoinClubRequest request)
         {
             // Validar claim de usuario
             var subClaim = User.FindFirst(ClaimTypes.NameIdentifier);
@@ -36,7 +37,8 @@ namespace MatchTickets.WebApi.Controllers
 
             try
             {
-                var card = _membershipService.CreateMembership(clientId, request.ClubId, request.Plan);
+                var card = await _membershipService.CreateMembershipAsync(clientId, request.ClubId, request.Plan);
+
                 string message = request.ClubId switch
                 {
                     1 => "¡Bienvenido Leproso! 🟥⬛",
@@ -66,13 +68,37 @@ namespace MatchTickets.WebApi.Controllers
             }
         }
 
+        [HttpGet("byclient")]
+        [Authorize]
+        public async Task<IActionResult> GetMembershipByClientIDAsync()
+        {
+            var subClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (subClaim == null)
+                return Unauthorized(new { error = "Token inválido o claim 'sub' ausente." });
 
+            var clientId = int.Parse(subClaim.Value);
+
+            var card = await _membershipService.GetMembershipCardByClientIdAsync(clientId);
+
+            if (card == null)
+                return NotFound(new { error = "El cliente no posee una membresía activa." });
+
+            return Ok(new
+            {
+                membershipId = card.MembershipId,
+                cardNumber = card.MembershipCardNumber,
+                clubId = card.ClubId,
+                plan = card.Plan.ToString(),
+                dischargeDate = card.DischargeDate,
+                expirationDate = card.ExpirationDate
+            });
+        }
+        // DTO para la request, que tome solo el ID del club y el plan ya que lo otro del user lo obtiene del JWT
+        public class JoinClubRequest
+        { 
+            public int ClubId { get; set; } 
+            public PartnerPlan Plan { get; set; }
+        }
     }
 
-    // DTO para la request, que tome solo el ID del club y el plan ya que lo otro del user lo obtiene del JWT
-    public class JoinClubRequest
-    {
-        public int ClubId { get; set; }
-        public PartnerPlan Plan { get; set; }
-    }
 }

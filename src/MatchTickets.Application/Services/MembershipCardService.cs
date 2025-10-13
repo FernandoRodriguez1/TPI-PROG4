@@ -12,28 +12,29 @@ namespace MatchTickets.Application.Services
 {
     public class MembershipCardService : IMembershipCardService
     {
-        private readonly IMembershipCardRepository _Membershiprepository;
+        private readonly IMembershipCardRepository _membershipRepository;
 
-        public MembershipCardService(IMembershipCardRepository repository)
+        public MembershipCardService(IMembershipCardRepository membershipRepository)
         {
-            _Membershiprepository = repository;
+            _membershipRepository = membershipRepository;
         }
 
-        public MembershipCard CreateMembership(int clientId, int clubId, PartnerPlan plan)
+        public async Task<MembershipCard> CreateMembershipAsync(int clientId, int clubId, PartnerPlan plan)
         {
-            // Verificar si el cliente ya tiene un carnet activo
-            var existingCard = _Membershiprepository.GetByClientId(clientId);
+          
+            var existingCard = await _membershipRepository.GetByClientIdAsync(clientId);
             if (existingCard != null)
                 throw new InvalidOperationException("El cliente ya tiene un carnet activo.");
 
-            // Obtener la última MembershipCard del club directamente desde GetAll()
-            var lastCard = _Membershiprepository
-                .GetAll() // IEnumerable<MembershipCard>
+
+            var allCards = await _membershipRepository.GetAllAsync();
+
+            var lastCard = allCards
                 .Where(c => c.ClubId == clubId)
-                .OrderByDescending(c => c.MembershipId) // o por DischargeDate si preferís
+                .OrderByDescending(c => c.MembershipId)
                 .FirstOrDefault();
 
-            // Calcular el siguiente número autoincremental
+            // calculo del siguiente numero de forma autoincremental
             int nextNumber = 1;
             if (lastCard != null)
             {
@@ -44,7 +45,7 @@ namespace MatchTickets.Application.Services
 
             string newCardNumber = $"N-0000-{nextNumber:D4}";
 
-            // Crear la nueva MembershipCard
+            //  crea la nueva Membership
             var newCard = new MembershipCard(clientId, clubId, plan)
             {
                 MembershipCardNumber = newCardNumber,
@@ -52,12 +53,19 @@ namespace MatchTickets.Application.Services
                 ExpirationDate = DateOnly.FromDateTime(DateTime.UtcNow.AddYears(1))
             };
 
-            // Guardar en el repositorio
-            _Membershiprepository.Add(newCard);
+            
+            await _membershipRepository.AddAsync(newCard);
+            await _membershipRepository.SaveChangesAsync();
 
             return newCard;
         }
 
-
+        
+        public async Task<MembershipCard?> GetMembershipCardByClientIdAsync(int clientId)
+        {
+            return await _membershipRepository.GetByClientIdAsync(clientId);
+        }
     }
+
+
 }

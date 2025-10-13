@@ -10,6 +10,9 @@ namespace MatchTickets.Application.Interfaces
 {
     public interface IMembershipCardService
     {
-        MembershipCard CreateMembership(int clientId, int clubId, PartnerPlan plan);
+        Task<MembershipCard> CreateMembershipAsync(int clientId, int clubId, PartnerPlan plan);
+
+        Task<MembershipCard?> GetMembershipCardByClientIdAsync(int clientId);
     }
+
 }

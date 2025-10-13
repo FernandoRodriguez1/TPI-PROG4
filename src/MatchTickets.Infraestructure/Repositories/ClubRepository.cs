@@ -12,8 +12,6 @@ namespace MatchTickets.Infraestructure.Repositories
 {
     public class ClubRepository : GenericRepository<Club>, IClubRepository 
     {
-        private readonly DbContextCR _context;
-
         public ClubRepository(DbContextCR context) : base(context)
         {
         }
