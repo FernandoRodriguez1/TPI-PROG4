@@ -42,34 +42,68 @@ namespace MatchTickets.WebApi.Controllers
             return Ok(matches);
         }
 
-        
+
         [HttpPost]
         public async Task<IActionResult> AddMatch([FromBody] SoccerMatchDTO matchDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            await _soccerMatchService.AddMatchAsync(matchDto);
-            return CreatedAtAction(nameof(GetMatchById), new { id = matchDto.SoccerMatchId }, matchDto);
+            try
+            {
+                await _soccerMatchService.AddMatchAsync(matchDto);
+
+                // CreatedAtAction apunta a un método que devuelve el recurso creado
+                return CreatedAtAction(nameof(GetMatchById), new { id = matchDto.SoccerMatchId }, matchDto);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
         }
 
-       
+
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateMatch(int id, [FromBody] SoccerMatchDTO matchDto)
         {
             if (id != matchDto.SoccerMatchId)
-                return BadRequest("ID mismatch");
+                return BadRequest(new { error = "El ID de la URL no coincide con el del cuerpo." });
 
-            await _soccerMatchService.UpdateMatchAsync(matchDto);
-            return NoContent();
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                await _soccerMatchService.UpdateMatchAsync(matchDto);
+                return NoContent();
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
         }
 
-        
+        // 🔹 Eliminar un partido
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMatch(int id)
         {
-            await _soccerMatchService.DeleteMatchAsync(id);
-            return NoContent();
+            try
+            {
+                await _soccerMatchService.DeleteMatchAsync(id);
+                return NoContent();
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
         }
     }
 

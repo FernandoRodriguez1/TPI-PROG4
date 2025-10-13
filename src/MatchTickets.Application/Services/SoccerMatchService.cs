@@ -22,17 +22,6 @@ namespace MatchTickets.Application.Services
             _soccerMatchRepository = soccerMatchRepository;
         }
 
-        public async Task AddMatchAsync(SoccerMatchDTO matchDto)
-        {
-            var entity = _mapper.Map<SoccerMatch>(matchDto);
-            await _soccerMatchRepository.AddAsync(entity);
-        }
-
-        public async Task DeleteMatchAsync(int matchId)
-        {
-            await _soccerMatchRepository.DeleteAsync(matchId);
-        }
-
         public async Task<IEnumerable<SoccerMatchDTO>> GetAllMatchesAsync()
         {
             var matches = await _soccerMatchRepository.GetAllAsync();
@@ -84,11 +73,40 @@ namespace MatchTickets.Application.Services
             return dtos;
         }
 
+        public async Task AddMatchAsync(SoccerMatchDTO matchDto)
+        {
+            if (matchDto == null)
+                throw new ArgumentNullException(nameof(matchDto));
+
+            var entity = _mapper.Map<SoccerMatch>(matchDto);
+            await _soccerMatchRepository.AddAsync(entity);
+            await _soccerMatchRepository.SaveChangesAsync();
+        }
+
         public async Task UpdateMatchAsync(SoccerMatchDTO matchDto)
         {
-            var entity = _mapper.Map<SoccerMatch>(matchDto);
-            await _soccerMatchRepository.UpdateAsync(entity);
+            if (matchDto == null)
+                throw new ArgumentNullException(nameof(matchDto));
+
+            var existingMatch = await _soccerMatchRepository.GetByIdAsync(matchDto.SoccerMatchId);
+            if (existingMatch == null)
+                throw new KeyNotFoundException($"Partido con ID {matchDto.SoccerMatchId} no encontrado.");
+
+            _mapper.Map(matchDto, existingMatch);
+            _soccerMatchRepository.Update(existingMatch);
+            await _soccerMatchRepository.SaveChangesAsync();
         }
+
+        public async Task DeleteMatchAsync(int matchId)
+        {
+            var match = await _soccerMatchRepository.GetByIdAsync(matchId);
+            if (match == null)
+                throw new KeyNotFoundException($"Partido con ID {matchId} no encontrado.");
+
+            _soccerMatchRepository.Delete(match);
+            await _soccerMatchRepository.SaveChangesAsync();
+        }
+
     }
 
 }

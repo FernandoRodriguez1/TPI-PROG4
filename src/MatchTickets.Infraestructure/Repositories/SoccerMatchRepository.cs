@@ -10,30 +10,12 @@ using System.Threading.Tasks;
 
 namespace MatchTickets.Infraestructure.Repositories
 {
-    public class SoccerMatchRepository : ISoccerMatchRepository
+    public class SoccerMatchRepository : GenericRepository<SoccerMatch>, ISoccerMatchRepository
     {
-        private readonly DbContextCR _context;
-
-        public SoccerMatchRepository(DbContextCR context)
+        public SoccerMatchRepository(DbContextCR context) : base(context)
         {
-            _context = context;
         }
 
-        public async Task AddAsync(SoccerMatch soccerMatch)
-        {
-            await _context.SoccerMatches.AddAsync(soccerMatch);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task DeleteAsync(int matchId)
-        {
-            var match = await _context.SoccerMatches.FindAsync(matchId);
-            if (match != null)
-            {
-                _context.SoccerMatches.Remove(match);
-                await _context.SaveChangesAsync();
-            }
-        }
 
         public async Task<IEnumerable<SoccerMatch>> GetAllAsync()
         {
@@ -60,11 +42,6 @@ namespace MatchTickets.Infraestructure.Repositories
                 .ToListAsync();
         }
 
-        public async Task UpdateAsync(SoccerMatch soccerMatch)
-        {
-            _context.SoccerMatches.Update(soccerMatch);
-            await _context.SaveChangesAsync();
-        }
     }
 
 }
