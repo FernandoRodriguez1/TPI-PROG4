@@ -15,12 +15,12 @@ namespace MatchTickets.Infraestructure.Migrations
                 name: "Clubs",
                 columns: table => new
                 {
-                    ClubId = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    ClubName = table.Column<string>(type: "TEXT", nullable: false),
-                    Ubication = table.Column<string>(type: "TEXT", nullable: false),
-                    FoundationOfTheClub = table.Column<DateOnly>(type: "TEXT", nullable: false),
-                    StadiumCapacity = table.Column<int>(type: "INTEGER", nullable: false)
+                    ClubId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ClubName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Ubication = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FoundationOfTheClub = table.Column<DateOnly>(type: "date", nullable: false),
+                    StadiumCapacity = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -31,16 +31,16 @@ namespace MatchTickets.Infraestructure.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    UserId = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Password = table.Column<string>(type: "TEXT", nullable: false),
-                    UserName = table.Column<string>(type: "TEXT", nullable: false),
-                    Email = table.Column<string>(type: "TEXT", nullable: false),
-                    UserType = table.Column<int>(type: "INTEGER", nullable: false),
-                    Age = table.Column<int>(type: "INTEGER", nullable: true),
-                    PhoneNumber = table.Column<int>(type: "INTEGER", nullable: true),
-                    Dni = table.Column<int>(type: "INTEGER", nullable: true),
-                    MembershipCardID = table.Column<int>(type: "INTEGER", nullable: true)
+                    UserId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserType = table.Column<int>(type: "int", nullable: false),
+                    Age = table.Column<int>(type: "int", nullable: true),
+                    PhoneNumber = table.Column<int>(type: "int", nullable: true),
+                    Dni = table.Column<int>(type: "int", nullable: true),
+                    MembershipCardID = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -51,13 +51,13 @@ namespace MatchTickets.Infraestructure.Migrations
                 name: "SoccerMatches",
                 columns: table => new
                 {
-                    SoccerMatchId = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    DayOfTheMatch = table.Column<DateOnly>(type: "TEXT", nullable: false),
-                    TimeOfTheMatch = table.Column<TimeSpan>(type: "TEXT", nullable: false),
-                    MatchLocation = table.Column<string>(type: "TEXT", nullable: false),
-                    NumberTicketsAvailable = table.Column<int>(type: "INTEGER", nullable: false),
-                    ClubId = table.Column<int>(type: "INTEGER", nullable: false)
+                    SoccerMatchId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    DayOfTheMatch = table.Column<DateOnly>(type: "date", nullable: false),
+                    TimeOfTheMatch = table.Column<TimeSpan>(type: "time", nullable: false),
+                    MatchLocation = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    NumberTicketsAvailable = table.Column<int>(type: "int", nullable: false),
+                    ClubId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -74,14 +74,14 @@ namespace MatchTickets.Infraestructure.Migrations
                 name: "MembershipCards",
                 columns: table => new
                 {
-                    MembershipId = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    MembershipCardNumber = table.Column<string>(type: "TEXT", nullable: false),
-                    Plan = table.Column<int>(type: "INTEGER", nullable: false),
-                    DischargeDate = table.Column<DateOnly>(type: "TEXT", nullable: false),
-                    ExpirationDate = table.Column<DateOnly>(type: "TEXT", nullable: false),
-                    ClientId = table.Column<int>(type: "INTEGER", nullable: false),
-                    ClubId = table.Column<int>(type: "INTEGER", nullable: false)
+                    MembershipId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    MembershipCardNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Plan = table.Column<int>(type: "int", nullable: false),
+                    DischargeDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    ExpirationDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    ClientId = table.Column<int>(type: "int", nullable: false),
+                    ClubId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -104,12 +104,12 @@ namespace MatchTickets.Infraestructure.Migrations
                 name: "Tickets",
                 columns: table => new
                 {
-                    TicketId = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Sector = table.Column<int>(type: "INTEGER", nullable: false),
-                    ClientId = table.Column<int>(type: "INTEGER", nullable: true),
-                    IsAvailable = table.Column<bool>(type: "INTEGER", nullable: false),
-                    SoccerMatchId = table.Column<int>(type: "INTEGER", nullable: false)
+                    TicketId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Sector = table.Column<int>(type: "int", nullable: false),
+                    ClientId = table.Column<int>(type: "int", nullable: true),
+                    IsAvailable = table.Column<bool>(type: "bit", nullable: false),
+                    SoccerMatchId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
