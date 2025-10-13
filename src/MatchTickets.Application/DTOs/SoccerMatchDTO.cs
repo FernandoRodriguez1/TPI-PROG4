@@ -16,6 +16,7 @@ namespace MatchTickets.Application.DTOs
         public string MatchLocation { get; set; }
         public int NumberTicketsAvailable { get; set; }
         public int ClubId { get; set; }
+        public int MaxTickets { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public string? ClubName { get; set; } 
@@ -23,3 +24,4 @@ namespace MatchTickets.Application.DTOs
 
 
 }
+

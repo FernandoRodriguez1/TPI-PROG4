@@ -15,8 +15,6 @@ namespace MatchTickets.Domain.Entities
         [Key]
         public int TicketId { get; set; }
 
-        public StadiumSector Sector { get; set; }
-
         public int? ClientId { get; set; } 
         public Client? Client { get; set; }
 

@@ -56,7 +56,7 @@ namespace MatchTickets.Infraestructure.Migrations
                     DayOfTheMatch = table.Column<DateOnly>(type: "date", nullable: false),
                     TimeOfTheMatch = table.Column<TimeSpan>(type: "time", nullable: false),
                     MatchLocation = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    NumberTicketsAvailable = table.Column<int>(type: "int", nullable: false),
+                    MaxTickets = table.Column<int>(type: "int", nullable: false),
                     ClubId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -106,7 +106,6 @@ namespace MatchTickets.Infraestructure.Migrations
                 {
                     TicketId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Sector = table.Column<int>(type: "int", nullable: false),
                     ClientId = table.Column<int>(type: "int", nullable: true),
                     IsAvailable = table.Column<bool>(type: "bit", nullable: false),
                     SoccerMatchId = table.Column<int>(type: "int", nullable: false)

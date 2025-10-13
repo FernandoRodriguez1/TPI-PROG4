@@ -104,7 +104,7 @@ namespace MatchTickets.Infraestructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("NumberTicketsAvailable")
+                    b.Property<int>("MaxTickets")
                         .HasColumnType("int");
 
                     b.Property<TimeSpan>("TimeOfTheMatch")
@@ -130,9 +130,6 @@ namespace MatchTickets.Infraestructure.Migrations
 
                     b.Property<bool>("IsAvailable")
                         .HasColumnType("bit");
-
-                    b.Property<int>("Sector")
-                        .HasColumnType("int");
 
                     b.Property<int>("SoccerMatchId")
                         .HasColumnType("int");

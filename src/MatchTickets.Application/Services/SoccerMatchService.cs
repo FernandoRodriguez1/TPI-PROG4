@@ -13,27 +13,28 @@ namespace MatchTickets.Application.Services
 {
     public class SoccerMatchService : ISoccerMatchService
     {
-        private readonly IMapper _mapper;
         private readonly ISoccerMatchRepository _soccerMatchRepository;
+        private readonly IMapper _mapper;
 
-        public SoccerMatchService(IMapper mapper, ISoccerMatchRepository soccerMatchRepository)
+        public SoccerMatchService(ISoccerMatchRepository soccerMatchRepository, IMapper mapper)
         {
-            _mapper = mapper;
             _soccerMatchRepository = soccerMatchRepository;
+            _mapper = mapper;
         }
 
         public async Task<IEnumerable<SoccerMatchDTO>> GetAllMatchesAsync()
         {
             var matches = await _soccerMatchRepository.GetAllAsync();
-            
+
             var matchDtos = _mapper.Map<IEnumerable<SoccerMatchDTO>>(matches);
 
             foreach (var dto in matchDtos)
             {
                 var matchEntity = matches.FirstOrDefault(m => m.SoccerMatchId == dto.SoccerMatchId);
-                if (matchEntity?.Tickets != null)
+                if (matchEntity != null)
                 {
-                    dto.NumberTicketsAvailable = matchEntity.Tickets.Count(t => t.IsAvailable);
+                    dto.MaxTickets = matchEntity.MaxTickets;
+                    dto.NumberTicketsAvailable = matchEntity.NumberTicketsAvailable;
                 }
             }
 
@@ -47,11 +48,8 @@ namespace MatchTickets.Application.Services
                 return null;
 
             var dto = _mapper.Map<SoccerMatchDTO>(match);
-
-            if (match.Tickets != null)
-            {
-                dto.NumberTicketsAvailable = match.Tickets.Count(t => t.IsAvailable);
-            }
+            dto.MaxTickets = match.MaxTickets;
+            dto.NumberTicketsAvailable = match.NumberTicketsAvailable;
 
             return dto;
         }
@@ -64,9 +62,10 @@ namespace MatchTickets.Application.Services
             foreach (var dto in dtos)
             {
                 var matchEntity = matches.FirstOrDefault(m => m.SoccerMatchId == dto.SoccerMatchId);
-                if (matchEntity?.Tickets != null)
+                if (matchEntity != null)
                 {
-                    dto.NumberTicketsAvailable = matchEntity.Tickets.Count(t => t.IsAvailable);
+                    dto.MaxTickets = matchEntity.MaxTickets;
+                    dto.NumberTicketsAvailable = matchEntity.NumberTicketsAvailable;
                 }
             }
 
@@ -79,6 +78,11 @@ namespace MatchTickets.Application.Services
                 throw new ArgumentNullException(nameof(matchDto));
 
             var entity = _mapper.Map<SoccerMatch>(matchDto);
+
+            // instancia de valores por defecto
+            if (entity.MaxTickets <= 0)
+                entity.MaxTickets = 30;
+
             await _soccerMatchRepository.AddAsync(entity);
             await _soccerMatchRepository.SaveChangesAsync();
         }
@@ -92,7 +96,12 @@ namespace MatchTickets.Application.Services
             if (existingMatch == null)
                 throw new KeyNotFoundException($"Partido con ID {matchDto.SoccerMatchId} no encontrado.");
 
-            _mapper.Map(matchDto, existingMatch);
+            // no se permiten actualizaciones de campos no permitidos
+            existingMatch.DayOfTheMatch = matchDto.DayOfTheMatch;
+            existingMatch.TimeOfTheMatch = matchDto.TimeOfTheMatch;
+            existingMatch.MatchLocation = matchDto.MatchLocation;
+            existingMatch.MaxTickets = matchDto.MaxTickets;
+
             _soccerMatchRepository.Update(existingMatch);
             await _soccerMatchRepository.SaveChangesAsync();
         }
@@ -106,7 +115,6 @@ namespace MatchTickets.Application.Services
             _soccerMatchRepository.Delete(match);
             await _soccerMatchRepository.SaveChangesAsync();
         }
-
     }
 
 }

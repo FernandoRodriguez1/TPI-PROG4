@@ -19,9 +19,7 @@ namespace MatchTickets.Domain.Entities
         public TimeSpan TimeOfTheMatch { get; set; }
 
         public string MatchLocation { get; set; }
-
-        public int NumberTicketsAvailable { get; set; }
-
+        public int MaxTickets { get; set; } = 30;
         public List<Ticket> Tickets { get; set; }
 
         public int ClubId { get; set; }
@@ -29,6 +27,9 @@ namespace MatchTickets.Domain.Entities
 
         [NotMapped]
         public string? ClubName { get; set; }
+
+        [NotMapped]
+        public int NumberTicketsAvailable => MaxTickets - (Tickets?.Count(t => !t.IsAvailable) ?? 0);
 
 
     }

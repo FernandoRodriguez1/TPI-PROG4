@@ -11,7 +11,6 @@ namespace MatchTickets.Application.DTOs
     public class TicketDTO
     {
         public int TicketId { get; set; }
-        public StadiumSector Sector { get; set; }
 
         public int? ClientId { get; set; } 
         public string? ClientMembershipNumber { get; set; } 

@@ -85,6 +85,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IClubRepository, ClubRepository>();
 builder.Services.AddScoped<IMembershipCardRepository, MembershipCardRepository>();
 builder.Services.AddScoped<ISoccerMatchRepository, SoccerMatchRepository>();
+builder.Services.AddScoped<ITicketRepository, TicketRepository>();
 #endregion
 
 #region
@@ -94,6 +95,7 @@ builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 builder.Services.AddScoped<IClubService , ClubService>();
 builder.Services.AddScoped<IMembershipCardService, MembershipCardService>();
 builder.Services.AddScoped<ISoccerMatchService, SoccerMatchService>();
+builder.Services.AddScoped<ITicketService, TicketService>();
 #endregion
 
 

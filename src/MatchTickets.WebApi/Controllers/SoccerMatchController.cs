@@ -15,7 +15,6 @@ namespace MatchTickets.WebApi.Controllers
             _soccerMatchService = soccerMatchService;
         }
 
-        
         [HttpGet]
         public async Task<IActionResult> GetAllMatches()
         {
@@ -53,7 +52,7 @@ namespace MatchTickets.WebApi.Controllers
             {
                 await _soccerMatchService.AddMatchAsync(matchDto);
 
-                // CreatedAtAction apunta a un método que devuelve el recurso creado
+                // CreatedAtAction devuelve el recurso creado
                 return CreatedAtAction(nameof(GetMatchById), new { id = matchDto.SoccerMatchId }, matchDto);
             }
             catch (Exception ex)
@@ -87,7 +86,6 @@ namespace MatchTickets.WebApi.Controllers
             }
         }
 
-        // 🔹 Eliminar un partido
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMatch(int id)
         {

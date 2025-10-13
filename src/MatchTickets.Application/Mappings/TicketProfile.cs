@@ -13,8 +13,18 @@ namespace MatchTickets.Application.Mappings
     {
         public TicketProfile()
         {
+            CreateMap<Ticket, TicketDTO>()
+                // llena el campo ClientMembershipNumber del DTO con el número de la tarjeta del cliente (si existe)
+                .ForMember(dest => dest.ClientMembershipNumber,
+                           opt => opt.MapFrom(src => src.Client != null ? src.Client.MembershipCard.MembershipCardNumber : null))
+                // llena el campo SoccerMatchDescription con el nombre del club y la fecha del partido
+                .ForMember(dest => dest.SoccerMatchDescription,
+                           opt => opt.MapFrom(src => src.SoccerMatch != null
+                               ? $"{src.SoccerMatch.Club.ClubName} - {src.SoccerMatch.DayOfTheMatch}"
+                               : null));
             CreateMap<TicketDTO, Ticket>();
-            CreateMap<Ticket, TicketDTO>();
         }
     }
+
+
 }

@@ -15,8 +15,6 @@ namespace MatchTickets.Application.Mappings
         {
             
             CreateMap<SoccerMatchDTO, SoccerMatch>();
-
-            
             CreateMap<SoccerMatch, SoccerMatchDTO>()
                 .ForMember(dest => dest.ClubName,
                     opt => opt.MapFrom(src => src.Club.ClubName)) 

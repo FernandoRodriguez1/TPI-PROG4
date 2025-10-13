@@ -31,18 +31,16 @@ namespace MatchTickets.Infraestructure.Repositories
             // calculo de las membership card del club 
             club.MembershipCount = club.MembershipCards?.Count ?? 0;
 
-            // lleno ClubName y NumberTicketsAvailable en cada partido
+            // se obtiene ClubName y limpio referencias para evitar ciclos
             if (club.SoccerMatches != null)
             {
                 foreach (var match in club.SoccerMatches)
                 {
                     match.ClubName = club.ClubName;
-                    match.NumberTicketsAvailable = match.Tickets?.Count(t => t.IsAvailable) ?? 0;
-
-                    //  vacio la referencia al club para evitar ciclos
                     match.Club = null;
                 }
             }
+
 
             // no necesito las cards completas por eso null
             club.MembershipCards = null;
