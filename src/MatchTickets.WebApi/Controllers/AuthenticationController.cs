@@ -50,7 +50,8 @@ public class AuthenticationController : ControllerBase
         {
             new Claim(JwtRegisteredClaimNames.Sub, user.UserId.ToString()),
             new Claim("username", user.UserName),
-            new Claim("usertype", user.UserType.ToString())
+            new Claim(ClaimTypes.Role, user.UserType.ToString())
+
         };
 
         // crear token

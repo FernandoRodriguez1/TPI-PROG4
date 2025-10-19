@@ -1,5 +1,6 @@
 ﻿using MatchTickets.Application.DTOs;
 using MatchTickets.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MatchTickets.WebApi.Controllers
@@ -16,6 +17,7 @@ namespace MatchTickets.WebApi.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "BothPolicy")]
         public async Task<IActionResult> GetAllMatches()
         {
             var matches = await _soccerMatchService.GetAllMatchesAsync();
@@ -24,6 +26,7 @@ namespace MatchTickets.WebApi.Controllers
 
         
         [HttpGet("{id}")]
+        [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> GetMatchById(int id)
         {
             var match = await _soccerMatchService.GetMatchByIdAsync(id);
@@ -35,14 +38,16 @@ namespace MatchTickets.WebApi.Controllers
 
         
         [HttpGet("club/{clubId}")]
+        [Authorize(Policy = "BothPolicy")]
         public async Task<IActionResult> GetMatchesByClub(int clubId)
         {
             var matches = await _soccerMatchService.GetMatchesByClubAsync(clubId);
             return Ok(matches);
         }
 
-
+        
         [HttpPost]
+        [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> AddMatch([FromBody] SoccerMatchDTO matchDto)
         {
             if (!ModelState.IsValid)
@@ -61,8 +66,8 @@ namespace MatchTickets.WebApi.Controllers
             }
         }
 
-
         [HttpPut("{id}")]
+        [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> UpdateMatch(int id, [FromBody] SoccerMatchDTO matchDto)
         {
             if (id != matchDto.SoccerMatchId)
@@ -87,6 +92,7 @@ namespace MatchTickets.WebApi.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> DeleteMatch(int id)
         {
             try

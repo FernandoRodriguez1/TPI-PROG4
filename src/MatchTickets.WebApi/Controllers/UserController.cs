@@ -18,6 +18,7 @@ public class UserController : ControllerBase
         _userService = userService;
     }
     [HttpGet("admins")]
+    [Authorize(Policy = "AdminPolicy")]
     public async Task<IActionResult> GetAdmins()
     {
         var admins = await _userService.GetAdminsAsync();
@@ -27,7 +28,7 @@ public class UserController : ControllerBase
         return Ok(admins);
     }
     [HttpGet("clients")]
-    [Authorize]
+    [Authorize(Policy = "AdminPolicy")]
     public async Task<IActionResult> GetClients()
     {
         var clients = await _userService.GetClientsAsync();
@@ -37,6 +38,7 @@ public class UserController : ControllerBase
         return Ok(clients);
     }
     [HttpGet("user-by-id")]
+    [Authorize(Policy = "AdminPolicy")]
     public async Task<IActionResult> GetUserById([FromQuery] int id)
     {
         var user = await _userService.GetClientByIdAsync(id);
@@ -47,6 +49,7 @@ public class UserController : ControllerBase
     }
 
     [HttpGet("user-by-email")]
+    [Authorize(Policy = "AdminPolicy")]
     public async Task<IActionResult> GetUserByEmail([FromQuery] string email)
     {
         var user = await _userService.GetClientByEmailAsync(new Email(email));
@@ -56,6 +59,7 @@ public class UserController : ControllerBase
         return Ok(user);
     }
     [HttpPost("client")]
+
     public async Task<IActionResult> AddClient([FromBody] ClientDTO clientDto)
     {
         await _userService.AddClientAsync(clientDto);
@@ -63,6 +67,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("admin")]
+    [Authorize(Policy = "AdminPolicy")]
     public async Task<IActionResult> AddAdmin([FromBody] AdminDTO adminDto)
     {
         await _userService.AddAdminAsync(adminDto);
@@ -70,6 +75,7 @@ public class UserController : ControllerBase
     }
 
     [HttpDelete("client")]
+    [Authorize(Policy = "BothPolicy")]
     public async Task<IActionResult> DeleteClient([FromQuery] int clientid)
     {
         await _userService.DeleteClientAsync(clientid);

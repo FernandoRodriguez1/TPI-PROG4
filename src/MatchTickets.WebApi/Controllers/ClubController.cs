@@ -20,6 +20,7 @@ namespace MatchTickets.WebApi.Controllers
 
         
         [HttpGet]
+        [Authorize(Policy = "BothPolicy")]
         public async Task<IActionResult> GetAll()
         {
             var clubs = await _clubService.GetAllAsync();
@@ -28,6 +29,8 @@ namespace MatchTickets.WebApi.Controllers
 
        
         [HttpGet("{id}")]
+        [Authorize(Policy = "AdminPolicy")]
+
         public async Task<IActionResult> GetById(int id)
         {
             try
@@ -43,6 +46,7 @@ namespace MatchTickets.WebApi.Controllers
 
         
         [HttpGet("{id}/matches")]
+        [Authorize(Policy = "BothPolicy")]
         public async Task<IActionResult> GetMatches(int id)
         {
             try
@@ -58,6 +62,7 @@ namespace MatchTickets.WebApi.Controllers
 
         
         [HttpGet("{id}/members/count")]
+        [Authorize(Policy = "BothPolicy")]
         public async Task<IActionResult> GetMembersCount(int id)
         {
             var count = await _clubService.GetMembersCountAsync(id);
@@ -66,6 +71,7 @@ namespace MatchTickets.WebApi.Controllers
 
 
         [HttpPut("{id}")]
+        [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> Update(int id, [FromBody] ClubDTO clubDto)
         {
             if (clubDto == null)
@@ -77,7 +83,7 @@ namespace MatchTickets.WebApi.Controllers
             try
             {
                 await _clubService.UpdateAsync(clubDto);
-                return NoContent(); // 204
+                return NoContent(); 
             }
             catch (KeyNotFoundException ex)
             {
@@ -86,12 +92,13 @@ namespace MatchTickets.WebApi.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> Delete(int id)
         {
             try
             {
                 await _clubService.DeleteAsync(id);
-                return NoContent(); // 204
+                return NoContent(); 
             }
             catch (KeyNotFoundException ex)
             {
@@ -100,6 +107,7 @@ namespace MatchTickets.WebApi.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> Create([FromBody] ClubDTO clubDto)
         {
             if (clubDto == null)

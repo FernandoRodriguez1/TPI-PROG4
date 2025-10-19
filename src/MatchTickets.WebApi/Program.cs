@@ -10,12 +10,29 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
+using System.Security.Claims;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 
 builder.Services.AddControllers();
+
+builder.Services.AddAuthorization(options =>
+{
+    // politicas para los roles
+
+    options.AddPolicy("AdminPolicy", policy =>
+        policy.RequireRole("Admin"));
+
+    options.AddPolicy("ClientPolicy", policy =>
+        policy.RequireRole("Client"));
+
+    // ambos roles
+    options.AddPolicy("BothPolicy", policy =>
+        policy.RequireRole("Admin", "Client"));
+});
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -75,9 +92,12 @@ builder.Services.AddAuthentication(options =>
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])
+        ),
+        RoleClaimType = ClaimTypes.Role // necesario para que Authorize(Roles="Client") funcione
     };
 });
+
 
 #region
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));

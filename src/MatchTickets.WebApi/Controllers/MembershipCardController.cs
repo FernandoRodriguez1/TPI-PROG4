@@ -19,7 +19,7 @@ namespace MatchTickets.WebApi.Controllers
 
         
         [HttpPost("join")]
-        [Authorize]
+        [Authorize(Policy = "ClientPolicy")]
         public async Task<IActionResult> CreateMembershipCard([FromBody] JoinClubRequest request)
         {
             // Validar claim de usuario
@@ -69,7 +69,7 @@ namespace MatchTickets.WebApi.Controllers
         }
 
         [HttpGet("byclient")]
-        [Authorize]
+        [Authorize(Policy = "BothPolicy")]
         public async Task<IActionResult> GetMembershipByClientIDAsync()
         {
             var subClaim = User.FindFirst(ClaimTypes.NameIdentifier);

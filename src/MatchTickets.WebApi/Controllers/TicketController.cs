@@ -17,6 +17,7 @@ namespace MatchTickets.WebApi.Controllers
         }
 
         [HttpGet("client/{clientId}")]
+        [Authorize(Policy = "ClientPolicy")]
         public async Task<IActionResult> GetByClient(int clientId)
         {
             var tickets = await _ticketService.GetTicketsByClientAsync(clientId);
@@ -24,7 +25,7 @@ namespace MatchTickets.WebApi.Controllers
         }
 
         [HttpPost("buy")]
-        [Authorize]
+        [Authorize(Policy = "ClientPolicy")]
         public async Task<IActionResult> BuyTicket([FromBody] int matchId)
         {
             var clientId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
