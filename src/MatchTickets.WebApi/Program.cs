@@ -3,12 +3,14 @@ using MatchTickets.Application.Services;
 using MatchTickets.Domain.Interfaces;
 using MatchTickets.Infraestructure.Authentication;
 using MatchTickets.Infraestructure.Data;
+using MatchTickets.Infraestructure.External_Services;
 using MatchTickets.Infraestructure.Repositories;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using SendGrid.Helpers.Mail;
 using System;
 using System.Security.Claims;
 using System.Text;
@@ -49,7 +51,7 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "MatchTickets API", Version = "v1" });
 
-    // Configuración para JWT Bearer
+    // configuracion para JWT Bearer
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description = "Ingrese 'Bearer' seguido de su token JWT. Ejemplo: Bearer {token}",
@@ -118,11 +120,28 @@ builder.Services.AddScoped<ISoccerMatchService, SoccerMatchService>();
 builder.Services.AddScoped<ITicketService, TicketService>();
 #endregion
 
+#region
+// configura las opciones de SendGrid mediante nuestras credenciales del appsettings.json
+builder.Services.Configure<SendGridOptions>(builder.Configuration.GetSection("SendGrid"));
+
+// registra y vincula SendGridService con HttpClient
+// evita crear infinitos HttpClient y los maneja internamente
+builder.Services.AddHttpClient<IMailService, SendGridService>(client =>
+{
+    client.BaseAddress = new Uri("https://api.sendgrid.com/v3/"); // URL base de la API de SendGrid
+    // configura los headers por defecto para no tener que pasarlos en cada request
+    client.DefaultRequestHeaders.Add("Accept", "application/json");
+});
+
+// integra con Dependency Injection que cuando se inyecta IMailService en algún servicio, automáticamente recibe un HttpClient configurado
+
+
+#endregion
 
 
 var app = builder.Build();
 
-// Middleware
+// middleware
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
