@@ -15,8 +15,11 @@ using System;
 using System.Security.Claims;
 using System.Text;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
+//asegura que se lean correctamente las variables de entorno de Azure
+builder.Configuration.AddEnvironmentVariables();
 
 builder.Services.AddControllers();
 
