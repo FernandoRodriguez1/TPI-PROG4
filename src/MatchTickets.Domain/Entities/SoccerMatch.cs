@@ -20,7 +20,7 @@ namespace MatchTickets.Domain.Entities
 
         public string MatchLocation { get; set; }
         public int MaxTickets { get; set; } = 30;
-        public List<Ticket> Tickets { get; set; }
+        public List<Ticket> Tickets { get; set; } = new List<Ticket>();
 
         public int ClubId { get; set; }
         public Club Club { get; set; }

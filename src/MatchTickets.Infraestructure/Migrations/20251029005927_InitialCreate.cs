@@ -38,8 +38,8 @@ namespace MatchTickets.Infraestructure.Migrations
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserType = table.Column<int>(type: "int", nullable: false),
                     Age = table.Column<int>(type: "int", nullable: true),
-                    PhoneNumber = table.Column<int>(type: "int", nullable: true),
-                    Dni = table.Column<int>(type: "int", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Dni = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     MembershipCardID = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>

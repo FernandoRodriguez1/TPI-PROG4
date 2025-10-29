@@ -13,7 +13,7 @@ namespace MatchTickets.Application.DTOs
         public string UserName { get; set; }
         public Email Email { get; set; }
         public int Age { get; set; }
-        public int PhoneNumber { get; set; }
+        public string PhoneNumber { get; set; }
 
         public string PasswordHash { get; set; }
     }

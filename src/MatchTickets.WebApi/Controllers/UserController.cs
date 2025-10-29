@@ -67,7 +67,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("admin")]
-    [Authorize(Policy = "AdminPolicy")]
+    //[Authorize(Policy = "AdminPolicy")]
     public async Task<IActionResult> AddAdmin([FromBody] AdminDTO adminDto)
     {
         await _userService.AddAdminAsync(adminDto);

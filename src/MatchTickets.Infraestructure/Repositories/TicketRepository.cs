@@ -31,9 +31,17 @@ namespace MatchTickets.Infraestructure.Repositories
         }
         public async Task<int> GetAvailableTicketsCountAsync(int matchId)
         {
-            return await _context.Tickets
-                .CountAsync(t => t.SoccerMatchId == matchId && t.IsAvailable);
+            var match = await _context.SoccerMatches
+                .Include(m => m.Tickets)
+                .FirstOrDefaultAsync(m => m.SoccerMatchId == matchId);
+
+            if (match == null) return 0;
+
+            // number of available tickets = max - tickets vendidos
+            var ticketsSold = match.Tickets.Count(t => !t.IsAvailable);
+            return match.MaxTickets - ticketsSold;
         }
+
 
         public async Task<bool> ClientHasTicketAsync(int clientId, int matchId)
         {
@@ -62,10 +70,6 @@ namespace MatchTickets.Infraestructure.Repositories
             if (membership == null)
                 throw new InvalidOperationException("El cliente no tiene una membership activa para este club.");
 
-            // Validar disponibilidad
-            var availableCount = await GetAvailableTicketsCountAsync(matchId);
-            if (availableCount >= match.MaxTickets)
-                throw new InvalidOperationException("No hay más entradas disponibles para este partido.");
 
             // Crear el ticket
             var newTicket = new Ticket
@@ -78,16 +82,7 @@ namespace MatchTickets.Infraestructure.Repositories
             _context.Tickets.Add(newTicket);
             await _context.SaveChangesAsync();
 
-            // Cargar relaciones para el DTO
-            await _context.Entry(newTicket).Reference(t => t.Client).LoadAsync();
-            if (newTicket.Client != null)
-                await _context.Entry(newTicket.Client).Reference(c => c.MembershipCard).LoadAsync();
-            await _context.Entry(newTicket).Reference(t => t.SoccerMatch).LoadAsync();
-            if (newTicket.SoccerMatch != null)
-                await _context.Entry(newTicket.SoccerMatch).Reference(sm => sm.Club).LoadAsync();
-
             return newTicket;
         }
-
     }
 }

@@ -29,27 +29,20 @@ namespace MatchTickets.Application.Services
             return _mapper.Map<IEnumerable<TicketDTO>>(tickets);
         }
 
-        public async Task<TicketDTO> CreateTicketAsync(int clientId, int matchId)
-        {
-            var newTicket = await _ticketRepository.CreateTicketAsync(clientId, matchId);
-            return _mapper.Map<TicketDTO>(newTicket);
-        }
         public async Task<TicketDTO> BuyTicketAsync(int clientId, int matchId)
         {
             var match = await _soccerMatchRepository.GetByIdAsync(matchId);
             if (match == null)
                 throw new KeyNotFoundException("Partido no encontrado.");
 
-            var membership = match.Club.MembershipCards
-                .FirstOrDefault(mc => mc.ClientId == clientId);
-
-            if (membership == null)
-                throw new InvalidOperationException("El cliente no tiene una membership activa para este club.");
+            var availableCount = await _ticketRepository.GetAvailableTicketsCountAsync(matchId);
+            if (availableCount <= 0)
+                throw new InvalidOperationException("No hay más entradas disponibles para este partido.");
 
             var newTicket = await _ticketRepository.CreateTicketAsync(clientId, matchId);
             return _mapper.Map<TicketDTO>(newTicket);
         }
-
+       
     }
 
 }

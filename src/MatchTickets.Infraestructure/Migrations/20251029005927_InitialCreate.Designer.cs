@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MatchTickets.Infraestructure.Migrations
 {
     [DbContext(typeof(DbContextCR))]
-    [Migration("20251013181550_InitialCreate")]
+    [Migration("20251029005927_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -188,14 +188,16 @@ namespace MatchTickets.Infraestructure.Migrations
                     b.Property<int>("Age")
                         .HasColumnType("int");
 
-                    b.Property<int>("Dni")
-                        .HasColumnType("int");
+                    b.Property<string>("Dni")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("MembershipCardID")
                         .HasColumnType("int");
 
-                    b.Property<int>("PhoneNumber")
-                        .HasColumnType("int");
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasDiscriminator().HasValue(1);
                 });

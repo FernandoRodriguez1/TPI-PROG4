@@ -28,10 +28,13 @@ namespace MatchTickets.WebApi.Controllers
         [Authorize(Policy = "ClientPolicy")]
         public async Task<IActionResult> BuyTicket([FromBody] int matchId)
         {
-            var clientId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            var ticket = await _ticketService.CreateTicketAsync(clientId, matchId);
-            return Ok(ticket);
+            
+                var clientId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                var ticket = await _ticketService.BuyTicketAsync(clientId, matchId);
+                return Ok(ticket);
+            
         }
+
     }
 
 }

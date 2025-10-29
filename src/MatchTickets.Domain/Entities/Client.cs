@@ -17,8 +17,8 @@ namespace MatchTickets.Domain.Entities
         }
         
         public int Age { get; set; }
-        public int PhoneNumber { get; set; }
-        public int Dni { get; set; }
+        public string PhoneNumber { get; set; }
+        public string Dni { get; set; }
 
         public ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
 

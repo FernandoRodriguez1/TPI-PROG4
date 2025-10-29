@@ -10,7 +10,9 @@ namespace MatchTickets.Application.Interfaces
     public interface ITicketService
     {
         Task<IEnumerable<TicketDTO>> GetTicketsByClientAsync(int clientId);
-        Task<TicketDTO> CreateTicketAsync(int clientId, int matchId);
+        Task<TicketDTO> BuyTicketAsync(int clientId, int matchId);
+
+        
     }
 
 }
