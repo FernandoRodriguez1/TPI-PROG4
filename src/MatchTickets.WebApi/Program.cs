@@ -159,6 +159,16 @@ builder.Services.AddHttpClient<IMailService, SendGridService>(client =>
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<DbContext>();
+    if (dbContext.Database.IsRelational())
+    {
+        dbContext.Database.Migrate();
+    }
+
+}
+
 // middleware
 if (app.Environment.IsDevelopment())
 {
