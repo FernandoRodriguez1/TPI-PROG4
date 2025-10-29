@@ -77,6 +77,24 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+var jwtKey = builder.Configuration["Jwt:Key"];
+if (string.IsNullOrEmpty(jwtKey))
+{
+    throw new Exception("Jwt:Key no está configurada en Azure App Settings");
+}
+
+var jwtIssuer = builder.Configuration["Jwt:Issuer"];
+if (string.IsNullOrEmpty(jwtIssuer))
+{
+    throw new Exception("Jwt:Issuer no está configurada en Azure App Settings");
+}
+
+var jwtAudience = builder.Configuration["Jwt:Audience"];
+if (string.IsNullOrEmpty(jwtAudience))
+{
+    throw new Exception("Jwt:Audience no está configurada en Azure App Settings");
+}
+
 // Configuración de JWT
 builder.Services.AddAuthentication(options =>
 {
