@@ -164,7 +164,7 @@ var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
-    var dbContext = scope.ServiceProvider.GetRequiredService<DbContext>();
+    var dbContext = scope.ServiceProvider.GetRequiredService<DbContextCR>();
     if (dbContext.Database.IsRelational())
     {
         dbContext.Database.Migrate();
