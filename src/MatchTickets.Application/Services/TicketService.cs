@@ -1,15 +1,12 @@
 ﻿using AutoMapper;
 using MatchTickets.Application.DTOs;
+using MatchTickets.Application.Exceptions;
 using MatchTickets.Application.Interfaces;
 using MatchTickets.Domain.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace MatchTickets.Application.Services
-{
+{   
     public class TicketService : ITicketService
     {
         private readonly ITicketRepository _ticketRepository;
@@ -33,16 +30,15 @@ namespace MatchTickets.Application.Services
         {
             var match = await _soccerMatchRepository.GetByIdAsync(matchId);
             if (match == null)
-                throw new KeyNotFoundException("Partido no encontrado.");
+                throw new NotFoundException($"Partido con ID {matchId} no encontrado.", "MATCH_NOT_FOUND");
 
             var availableCount = await _ticketRepository.GetAvailableTicketsCountAsync(matchId);
             if (availableCount <= 0)
-                throw new InvalidOperationException("No hay más entradas disponibles para este partido.");
+                throw new AppValidationException("No hay más entradas disponibles para este partido.", "NO_TICKETS_AVAILABLE");
 
             var newTicket = await _ticketRepository.CreateTicketAsync(clientId, matchId);
             return _mapper.Map<TicketDTO>(newTicket);
         }
-       
     }
 
 }

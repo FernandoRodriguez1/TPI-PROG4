@@ -5,13 +5,11 @@ using MatchTickets.Infraestructure.Authentication;
 using MatchTickets.Infraestructure.Data;
 using MatchTickets.Infraestructure.External_Services;
 using MatchTickets.Infraestructure.Repositories;
-using Microsoft.AspNetCore.Authentication;
+using MatchTickets.WebApi.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using SendGrid.Helpers.Mail;
-using System;
 using System.Security.Claims;
 using System.Text;
 
@@ -55,13 +53,11 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "MatchTickets API", Version = "v1" });
 
     // configuracion para JWT Bearer
-    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    c.AddSecurityDefinition("MatchTicketsAuth", new OpenApiSecurityScheme
     {
-        Description = "Ingrese 'Bearer' seguido de su token JWT. Ejemplo: Bearer {token}",
-        Name = "Authorization",
-        In = ParameterLocation.Header,
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "Bearer"
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        Description = "Ingrese el TO"
     });
 
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -72,31 +68,13 @@ builder.Services.AddSwaggerGen(c =>
                 Reference = new OpenApiReference
                 {
                     Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
+                    Id = "MatchTicketsAuth"
                 }
             },
             new string[] {}
         }
     });
 });
-
-var jwtKey = builder.Configuration["Jwt:Key"];
-if (string.IsNullOrEmpty(jwtKey))
-{
-    throw new Exception("Jwt:Key no está configurada en Azure App Settings");
-}
-
-var jwtIssuer = builder.Configuration["Jwt:Issuer"];
-if (string.IsNullOrEmpty(jwtIssuer))
-{
-    throw new Exception("Jwt:Issuer no está configurada en Azure App Settings");
-}
-
-var jwtAudience = builder.Configuration["Jwt:Audience"];
-if (string.IsNullOrEmpty(jwtAudience))
-{
-    throw new Exception("Jwt:Audience no está configurada en Azure App Settings");
-}
 
 // Configuración de JWT
 builder.Services.AddAuthentication(options =>
@@ -115,13 +93,15 @@ builder.Services.AddAuthentication(options =>
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])
+           Encoding.ASCII.GetBytes(builder.Configuration["Jwt:Key"])
         ),
         RoleClaimType = ClaimTypes.Role // necesario para que Authorize(Roles="Client") funcione
     };
 });
 
-
+#region
+builder.Services.AddTransient<GlobalExceptionMiddleware>();
+#endregion
 #region
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -177,17 +157,14 @@ if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
     app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "MatchTickets API v1");
-        c.RoutePrefix = string.Empty;
-    });
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
 
 app.UseAuthentication();   
 app.UseAuthorization();
+app.UseMiddleware<GlobalExceptionMiddleware>();
 
 app.MapControllers();
 

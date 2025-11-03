@@ -66,7 +66,7 @@ public class AuthenticationController : ControllerBase
 
         var tokenToReturn = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
 
-        return Ok(new { token = $"Bearer {tokenToReturn}" });
+        return Ok(tokenToReturn);
 
     }
 }

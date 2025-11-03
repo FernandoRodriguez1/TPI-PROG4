@@ -1,20 +1,16 @@
 ﻿using AutoMapper;
 using MatchTickets.Application.DTOs;
+using MatchTickets.Application.Exceptions;
 using MatchTickets.Application.Interfaces;
 using MatchTickets.Domain.Entities;
 using MatchTickets.Domain.Interfaces;
 using MatchTickets.Domain.ValueObjects;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace MatchTickets.Application.Services
 {
     public class UserService : IUserService
     {
-
         private readonly IMapper _mapper;
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHasher _passwordHasher;
@@ -25,6 +21,7 @@ namespace MatchTickets.Application.Services
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
         }
+
         private ClientDTO ToDto(Client client)
         {
             return new ClientDTO
@@ -58,39 +55,28 @@ namespace MatchTickets.Application.Services
         public async Task AddClientAsync(ClientDTO clientDto)
         {
             if (clientDto == null)
-                throw new ArgumentNullException(nameof(clientDto), "El cliente no puede ser nulo.");
+                throw new AppValidationException("El cliente no puede ser nulo.", "CLIENT_NULL");
 
-            
             var client = _mapper.Map<Client>(clientDto);
-
-            
             client.Password = _passwordHasher.HashPassword(clientDto.Password);
-
-            
             await _userRepository.AddClientAsync(client);
         }
-
-
 
         public async Task DeleteClientAsync(int id)
         {
             var client = await _userRepository.GetClientByIdAsync(id);
 
             if (client == null)
-            {
-                throw new KeyNotFoundException($"Cliente no encontrado.");
-            }
+                throw new NotFoundException($"Cliente con ID {id} no encontrado.", "CLIENT_NOT_FOUND");
 
             await _userRepository.DeleteClientAsync(id);
         }
-
 
         public async Task<IEnumerable<AdminDTO>> GetAdminsAsync()
         {
             var admins = await _userRepository.GetAdminsAsync();
             return _mapper.Map<IEnumerable<AdminDTO>>(admins);
         }
-
 
         public async Task<IEnumerable<ClientDTO>> GetClientsAsync()
         {
@@ -101,19 +87,20 @@ namespace MatchTickets.Application.Services
         public User GetUserByEmail(Email email)
         {
             var user = _userRepository.GetUserByEmail(email);
+
             if (user == null)
-            {
-                throw new KeyNotFoundException($"Usuario no encontrado.");
-            }
+                throw new NotFoundException($"Usuario con email {email.Value} no encontrado.", "USER_NOT_FOUND");
+
             return user;
         }
+
         public async Task<ClientDTO> GetClientByEmailAsync(Email email)
         {
             var user = await _userRepository.GetClientByEmailAsync(email);
+
             if (user == null)
-            {
-                throw new KeyNotFoundException($"Cliente no encontrado.");
-            }
+                throw new NotFoundException($"Cliente con email {email.Value} no encontrado.", "CLIENT_NOT_FOUND");
+
             return ToDto(user);
         }
 
@@ -122,12 +109,10 @@ namespace MatchTickets.Application.Services
             var user = await _userRepository.GetClientByIdAsync(id);
 
             if (user == null)
-            {
-                throw new KeyNotFoundException($"Cliente no encontrado.");
-            }
+                throw new NotFoundException($"Cliente con ID {id} no encontrado.", "CLIENT_NOT_FOUND");
 
             return ToDto(user);
         }
-
     }
+
 }

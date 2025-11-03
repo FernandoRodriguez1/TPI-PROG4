@@ -1,13 +1,10 @@
 ﻿using AutoMapper;
 using MatchTickets.Application.DTOs;
+using MatchTickets.Application.Exceptions;
 using MatchTickets.Application.Interfaces;
 using MatchTickets.Domain.Entities;
 using MatchTickets.Domain.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace MatchTickets.Application.Services
 {
@@ -45,7 +42,7 @@ namespace MatchTickets.Application.Services
         {
             var match = await _soccerMatchRepository.GetByIdAsync(matchId);
             if (match == null)
-                return null;
+                throw new NotFoundException($"Partido con ID {matchId} no encontrado.", "MATCH_NOT_FOUND");
 
             var dto = _mapper.Map<SoccerMatchDTO>(match);
             dto.MaxTickets = match.MaxTickets;
@@ -75,7 +72,7 @@ namespace MatchTickets.Application.Services
         public async Task AddMatchAsync(SoccerMatchDTO matchDto)
         {
             if (matchDto == null)
-                throw new ArgumentNullException(nameof(matchDto));
+                throw new AppValidationException("El partido no puede ser nulo.", "MATCH_NULL");
 
             var entity = _mapper.Map<SoccerMatch>(matchDto);
 
@@ -90,11 +87,11 @@ namespace MatchTickets.Application.Services
         public async Task UpdateMatchAsync(SoccerMatchDTO matchDto)
         {
             if (matchDto == null)
-                throw new ArgumentNullException(nameof(matchDto));
+                throw new AppValidationException("El partido no puede ser nulo.", "MATCH_NULL");
 
             var existingMatch = await _soccerMatchRepository.GetByIdAsync(matchDto.SoccerMatchId);
             if (existingMatch == null)
-                throw new KeyNotFoundException($"Partido con ID {matchDto.SoccerMatchId} no encontrado.");
+                throw new NotFoundException($"Partido con ID {matchDto.SoccerMatchId} no encontrado.", "MATCH_NOT_FOUND");
 
             // no se permiten actualizaciones de campos no permitidos
             existingMatch.DayOfTheMatch = matchDto.DayOfTheMatch;
@@ -110,7 +107,7 @@ namespace MatchTickets.Application.Services
         {
             var match = await _soccerMatchRepository.GetByIdAsync(matchId);
             if (match == null)
-                throw new KeyNotFoundException($"Partido con ID {matchId} no encontrado.");
+                throw new NotFoundException($"Partido con ID {matchId} no encontrado.", "MATCH_NOT_FOUND");
 
             _soccerMatchRepository.Delete(match);
             await _soccerMatchRepository.SaveChangesAsync();
