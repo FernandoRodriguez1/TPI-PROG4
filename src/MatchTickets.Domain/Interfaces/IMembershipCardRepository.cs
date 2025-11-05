@@ -11,5 +11,6 @@ namespace MatchTickets.Domain.Interfaces
     public interface IMembershipCardRepository : IGenericRepository<MembershipCard>
     {
         Task<MembershipCard?> GetByClientIdAsync(int clientId);
+        Task<MembershipCard?> GetLastMembershipOfClubAsync(int clubId);
     }
 }

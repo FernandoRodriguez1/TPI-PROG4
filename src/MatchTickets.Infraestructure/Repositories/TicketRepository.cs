@@ -1,12 +1,9 @@
-﻿using MatchTickets.Domain.Entities;
+﻿using MatchTickets.Application.Exceptions;
+using MatchTickets.Domain.Entities;
 using MatchTickets.Domain.Interfaces;
 using MatchTickets.Infraestructure.Data;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace MatchTickets.Infraestructure.Repositories
 {
@@ -37,7 +34,6 @@ namespace MatchTickets.Infraestructure.Repositories
 
             if (match == null) return 0;
 
-            // number of available tickets = max - tickets vendidos
             var ticketsSold = match.Tickets.Count(t => !t.IsAvailable);
             return match.MaxTickets - ticketsSold;
         }
@@ -51,27 +47,15 @@ namespace MatchTickets.Infraestructure.Repositories
 
         public async Task<Ticket> CreateTicketAsync(int clientId, int matchId)
         {
-            // Verificar que el cliente ya no tenga un ticket para este partido
-            var hasTicket = await ClientHasTicketAsync(clientId, matchId);
-            if (hasTicket)
-                throw new InvalidOperationException("El cliente ya tiene un ticket para este partido.");
-
-            // Obtener el partido incluyendo el club y las membership cards
             var match = await _context.SoccerMatches
                 .Include(sm => sm.Club)
                     .ThenInclude(c => c.MembershipCards)
                 .FirstOrDefaultAsync(sm => sm.SoccerMatchId == matchId);
 
-            if (match == null)
-                throw new KeyNotFoundException("Partido no encontrado.");
-
-            // Validar que el cliente tenga membership activa en ese club
             var membership = match.Club.MembershipCards.FirstOrDefault(mc => mc.ClientId == clientId);
             if (membership == null)
-                throw new InvalidOperationException("El cliente no tiene una membership activa para este club.");
+                throw new AppValidationException("El cliente no tiene una membership activa para este club.");
 
-
-            // Crear el ticket
             var newTicket = new Ticket
             {
                 ClientId = clientId,
@@ -84,5 +68,6 @@ namespace MatchTickets.Infraestructure.Repositories
 
             return newTicket;
         }
+       
     }
 }

@@ -30,9 +30,6 @@ namespace MatchTickets.WebApi.Controllers
         public async Task<IActionResult> GetMatchById(int id)
         {
             var match = await _soccerMatchService.GetMatchByIdAsync(id);
-            if (match == null)
-                return NotFound();
-
             return Ok(match);
         }
 
@@ -66,48 +63,26 @@ namespace MatchTickets.WebApi.Controllers
             }
         }
 
-        [HttpPut("{id}")]
+        [HttpPut]
         [Authorize(Policy = "AdminPolicy")]
-        public async Task<IActionResult> UpdateMatch(int id, [FromBody] SoccerMatchDTO matchDto)
+        public async Task<IActionResult> UpdateMatch( [FromBody] SoccerMatchDTO matchDto)
         {
-            if (id != matchDto.SoccerMatchId)
-                return BadRequest(new { error = "El ID de la URL no coincide con el del cuerpo." });
-
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            try
-            {
-                await _soccerMatchService.UpdateMatchAsync(matchDto);
-                return NoContent();
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(new { error = ex.Message });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { error = ex.Message });
-            }
+            
+            await _soccerMatchService.UpdateMatchAsync(matchDto);
+
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
         [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> DeleteMatch(int id)
         {
-            try
-            {
-                await _soccerMatchService.DeleteMatchAsync(id);
-                return NoContent();
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(new { error = ex.Message });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { error = ex.Message });
-            }
+            await _soccerMatchService.DeleteMatchAsync(id);
+
+            return NoContent();
         }
     }
 

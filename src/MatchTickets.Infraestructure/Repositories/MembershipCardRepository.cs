@@ -24,5 +24,13 @@ namespace MatchTickets.Infraestructure.Repositories
             return _context.MembershipCards
                 .FirstOrDefaultAsync(mc => mc.ClientId == clientId);
         }
+        public async Task<MembershipCard?> GetLastMembershipOfClubAsync(int clubId)
+        {
+            return await _context.MembershipCards
+                .Where(c => c.ClubId == clubId)
+                .OrderByDescending(c => c.MembershipId)
+                .FirstOrDefaultAsync();
+        }
+
     }
 }

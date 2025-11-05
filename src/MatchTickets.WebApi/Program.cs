@@ -1,6 +1,7 @@
 ﻿using MatchTickets.Application.Interfaces;
 using MatchTickets.Application.Services;
 using MatchTickets.Domain.Interfaces;
+using MatchTickets.Infraestructure;
 using MatchTickets.Infraestructure.Authentication;
 using MatchTickets.Infraestructure.Data;
 using MatchTickets.Infraestructure.External_Services;
@@ -12,7 +13,9 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Security.Claims;
 using System.Text;
-
+using Polly;
+using Polly.Extensions.Http;
+using Polly.CircuitBreaker;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -57,7 +60,7 @@ builder.Services.AddSwaggerGen(c =>
     {
         Type = SecuritySchemeType.Http,
         Scheme = "bearer",
-        Description = "Ingrese el TO"
+        Description = "Ingrese el Token"
     });
 
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -76,7 +79,7 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-// Configuración de JWT
+// configuracion de JWT
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -121,23 +124,37 @@ builder.Services.AddScoped<ISoccerMatchService, SoccerMatchService>();
 builder.Services.AddScoped<ITicketService, TicketService>();
 #endregion
 
-#region
-// configura las opciones de SendGrid mediante nuestras credenciales del appsettings.json
-builder.Services.Configure<SendGridOptions>(builder.Configuration.GetSection("SendGrid"));
 
-// registra y vincula SendGridService con HttpClient
-// evita crear infinitos HttpClient y los maneja internamente
+
+#region 
+
+// vincula las opciones de SendGrid con las de appsettings IOptions Pattern
+builder.Services.Configure<SendGridOptions>(
+    builder.Configuration.GetSection("SendGrid"));
+
+// 2) configuracion de resiliencia para SendGrid
+var sendGridResilienceConfig = new ApiClientConfiguration
+{
+    RetryCount = 3,
+    RetryAttemptInSeconds = 1,
+    HandledEventsAllowedBeforeBreaking = 2,
+    DurationOfBreakInSeconds = 30
+};
+
+// registra IMailService y SendGridService
+// y crea un HttpClient administrado por IHttpClientFactory
 builder.Services.AddHttpClient<IMailService, SendGridService>(client =>
 {
-    client.BaseAddress = new Uri("https://api.sendgrid.com/v3/"); // URL base de la API de SendGrid
-    // configura los headers por defecto para no tener que pasarlos en cada request
+    client.BaseAddress = new Uri("https://api.sendgrid.com/v3/");
     client.DefaultRequestHeaders.Add("Accept", "application/json");
-});
+})
 
-// integra con Dependency Injection que cuando se inyecta IMailService en algún servicio, automáticamente recibe un HttpClient configurado
-
+// patrones Retry y Circuit Breaker
+.AddPolicyHandler(PollyResiliencePolicies.GetRetryPolicy(sendGridResilienceConfig))
+.AddPolicyHandler(PollyResiliencePolicies.GetCircuitBreakerPolicy(sendGridResilienceConfig));
 
 #endregion
+
 
 
 var app = builder.Build();

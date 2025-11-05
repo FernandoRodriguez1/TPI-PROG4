@@ -26,7 +26,7 @@ namespace MatchTickets.WebApi.Controllers
 
         [HttpPost("buy")]
         [Authorize(Policy = "ClientPolicy")]
-        public async Task<IActionResult> BuyTicket([FromBody] int matchId)
+        public async Task<IActionResult> BuyTicket(int matchId)
         {
             
                 var clientId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);

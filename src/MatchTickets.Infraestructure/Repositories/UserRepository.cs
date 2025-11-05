@@ -50,29 +50,19 @@ namespace MatchTickets.Infraestructure.Repositories
 
         public async Task<IEnumerable<Admin>> GetAdminsAsync()
         {
-            // Filtra solo los Admin usando el tipo concreto
+            // filtra solo los Admin usando el tipo concreto
             return await _context.Users
                                  .OfType<Admin>()
                                  .ToListAsync();
-
-            // Alternativa usando el discriminador:
-            // return await _context.Users
-            //                      .Where(u => u.UserType == UserType.Admin)
-            //                      .ToListAsync();
         }
 
         public async Task<IEnumerable<Client>> GetClientsAsync()
         {
-            // Filtra solo los Client usando el tipo concreto
+            // filtra solo los Client usando el tipo concreto
             return await _context.Users
                                  .OfType<Client>()
                                  .Include(c => c.MembershipCard)
                                  .ToListAsync();
-
-            // Alternativa usando el discriminador:return await _context.Clients
-            // return await _context.Users
-            //                      .Where(u => u.UserType == UserType.Client)
-            //                      .ToListAsync();
         }
 
         public Task<Client?> GetClientByEmailAsync(Email email)
@@ -94,9 +84,6 @@ namespace MatchTickets.Infraestructure.Repositories
         {
             return _context.Users.FirstOrDefault(c => c.Email.Value == email.Value);
         }
-
-
-
 
     }
 }

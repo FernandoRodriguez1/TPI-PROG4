@@ -1,4 +1,5 @@
-﻿using MatchTickets.Domain.Entities;
+﻿using MatchTickets.Application.DTOs;
+using MatchTickets.Domain.Entities;
 using MatchTickets.Domain.Enums;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace MatchTickets.Application.Interfaces
 {
     public interface IMembershipCardService
     {
-        Task<MembershipCard> CreateMembershipAsync(int clientId, int clubId, PartnerPlan plan);
+        Task<MembershipCardResponse> CreateMembershipAsync(int clientId, int clubId, PartnerPlan plan);
 
         Task<MembershipCard?> GetMembershipCardByClientIdAsync(int clientId);
     }

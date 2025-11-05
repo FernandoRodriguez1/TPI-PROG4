@@ -16,7 +16,6 @@ namespace MatchTickets.Infraestructure.Repositories
         {
         }
 
-
         public async Task<IEnumerable<SoccerMatch>> GetAllAsync()
         {
             return await _context.SoccerMatches

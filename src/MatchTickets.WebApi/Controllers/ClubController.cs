@@ -1,4 +1,5 @@
 ﻿using MatchTickets.Application.DTOs;
+using MatchTickets.Application.Exceptions;
 using MatchTickets.Application.Interfaces;
 using MatchTickets.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
@@ -33,15 +34,8 @@ namespace MatchTickets.WebApi.Controllers
 
         public async Task<IActionResult> GetById(int id)
         {
-            try
-            {
-                var club = await _clubService.GetByIdAsync(id);
-                return Ok(club);
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(new { error = ex.Message });
-            }
+            var club = await _clubService.GetByIdAsync(id);
+            return Ok(club);
         }
 
         
@@ -49,15 +43,8 @@ namespace MatchTickets.WebApi.Controllers
         [Authorize(Policy = "BothPolicy")]
         public async Task<IActionResult> GetMatches(int id)
         {
-            try
-            {
-                var matches = await _clubService.GetMatchesAsync(id);
-                return Ok(matches);
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(new { error = ex.Message });
-            }
+            var matches = await _clubService.GetMatchesAsync(id);
+            return Ok(matches);
         }
 
         
@@ -70,52 +57,27 @@ namespace MatchTickets.WebApi.Controllers
         }
 
 
-        [HttpPut("{id}")]
+        [HttpPut]
         [Authorize(Policy = "AdminPolicy")]
-        public async Task<IActionResult> Update(int id, [FromBody] ClubDTO clubDto)
+        public async Task<IActionResult> Update([FromBody] ClubDTO clubDto)
         {
-            if (clubDto == null)
-                return BadRequest(new { error = "Club no puede ser nulo." });
-
-            if (id != clubDto.ClubId)
-                return BadRequest(new { error = "ID del club no coincide con el body." });
-
-            try
-            {
-                await _clubService.UpdateAsync(clubDto);
-                return NoContent(); 
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(new { error = ex.Message });
-            }
+            await _clubService.UpdateAsync(clubDto);
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
         [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> Delete(int id)
         {
-            try
-            {
-                await _clubService.DeleteAsync(id);
-                return NoContent(); 
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(new { error = ex.Message });
-            }
+            await _clubService.DeleteAsync(id);
+            return NoContent();
         }
 
         [HttpPost]
         [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> Create([FromBody] ClubDTO clubDto)
         {
-            if (clubDto == null)
-                return BadRequest(new { error = "Club no puede ser nulo." });
-
             await _clubService.AddAsync(clubDto);
-
-            // Retornar DTO con el ID generado
             clubDto.ClubId = clubDto.ClubId;
             return CreatedAtAction(nameof(GetById), new { id = clubDto.ClubId }, clubDto);
         }
