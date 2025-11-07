@@ -30,7 +30,7 @@ namespace MatchTickets.WebApi.Middlewares
                 ProblemDetails problem = new()
                 {
                     Status = statusCode,
-                    Type = "https://bankaccountapi/errors/appvalidation",
+                    Type = "https://matchticketsapi/errors/appvalidation",
                     Title = "Validation error",
                     Detail = ex.Message
                 };
