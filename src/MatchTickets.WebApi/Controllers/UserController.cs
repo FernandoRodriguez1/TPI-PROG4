@@ -75,5 +75,12 @@ public class UserController : ControllerBase
         await _userService.DeleteClientAsync(clientid);
         return Ok("Client deleted successfully");
     }
+    [HttpPut("client/{id}")]
+    public async Task<IActionResult> UpdateClient(int id, [FromBody] UpdateClientDTO dto)
+    {
+        await _userService.UpdateClientAsync(id, dto);
+        return Ok(new { Message = "Cliente actualizado correctamente" });
+    }
+
 }
 

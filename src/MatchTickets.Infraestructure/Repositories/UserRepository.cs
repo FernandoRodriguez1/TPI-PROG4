@@ -12,40 +12,11 @@ using System.Xml.Linq;
 
 namespace MatchTickets.Infraestructure.Repositories
 {
-    public class UserRepository : IUserRepository
+    public class UserRepository : GenericRepository<User>, IUserRepository
     {
-        private readonly DbContextCR _context;
-
-        public UserRepository(DbContextCR context)
+        public UserRepository(DbContextCR context) : base(context)
         {
-            _context = context;
-        }
-
-        public async Task AddAdminAsync(Admin admin)
-        {
-            _context.Users.Add(admin);
-            await _context.SaveChangesAsync();
-
-        }
-
-        public async Task AddClientAsync(Client client)
-        {
-            _context.Users.Add(client);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task DeleteClientAsync(int id)
-        {
-            var client = new Client { UserId = id };
-            _context.Users.Remove(client);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task DeleteAdminAsync(int id)
-        {
-            var admin = new Admin { UserId = id };
-            _context.Users.Remove(admin);
-            await _context.SaveChangesAsync();
+            
         }
 
         public async Task<IEnumerable<Admin>> GetAdminsAsync()

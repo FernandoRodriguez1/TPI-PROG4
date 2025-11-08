@@ -3,6 +3,7 @@ using MatchTickets.Application.DTOs;
 using MatchTickets.Application.Exceptions;
 using MatchTickets.Application.Interfaces;
 using MatchTickets.Domain.Entities;
+using MatchTickets.Domain.Enums;
 using MatchTickets.Domain.Interfaces;
 using MatchTickets.Domain.ValueObjects;
 
@@ -49,8 +50,11 @@ namespace MatchTickets.Application.Services
         {
             var admin = _mapper.Map<Admin>(adminDto);
             admin.Password = _passwordHasher.HashPassword(adminDto.Password);
-            await _userRepository.AddAdminAsync(admin);
+
+            await _userRepository.AddAsync(admin);
+            await _userRepository.SaveChangesAsync();
         }
+
 
         public async Task AddClientAsync(ClientDTO clientDto)
         {
@@ -59,18 +63,43 @@ namespace MatchTickets.Application.Services
 
             var client = _mapper.Map<Client>(clientDto);
             client.Password = _passwordHasher.HashPassword(clientDto.Password);
-            await _userRepository.AddClientAsync(client);
+
+            await _userRepository.AddAsync(client);
+            await _userRepository.SaveChangesAsync();
         }
+
 
         public async Task DeleteClientAsync(int id)
         {
-            var client = await _userRepository.GetClientByIdAsync(id);
+            var client = await _userRepository.GetByIdAsync(id);
 
             if (client == null)
                 throw new NotFoundException($"Cliente con ID {id} no encontrado.", "CLIENT_NOT_FOUND");
 
-            await _userRepository.DeleteClientAsync(id);
+            _userRepository.Delete(client);
+            await _userRepository.SaveChangesAsync();
         }
+        public async Task UpdateClientAsync(int id, UpdateClientDTO dto)
+        {
+            var client = await _userRepository.GetByIdAsync(id);
+
+            if (client == null || client.UserType != UserType.Client)
+                throw new NotFoundException($"Cliente con ID {id} no encontrado.", "CLIENT_NOT_FOUND");
+
+            if (!string.IsNullOrWhiteSpace(dto.Nombre))
+                client.UserName = dto.Nombre;
+
+            if (!string.IsNullOrWhiteSpace(dto.Email))
+                client.Email = new Email(dto.Email);
+
+            if (!string.IsNullOrWhiteSpace(dto.Password))
+                client.Password = _passwordHasher.HashPassword(dto.Password);
+
+            _userRepository.Update(client);
+            await _userRepository.SaveChangesAsync();
+        }
+
+
 
         public async Task<IEnumerable<AdminDTO>> GetAdminsAsync()
         {
