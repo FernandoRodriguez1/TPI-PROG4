@@ -51,7 +51,7 @@ namespace MatchTickets.WebApi.Middlewares
                 ProblemDetails problem = new()
                 {
                     Status = statusCode,
-                    Type = "https://bankaccountapi/errors/notfoundexception",
+                    Type = "https://matchticketsapi/errors/notfoundexception",
                     Title = "NotFoundException",
                     Detail = ex.Message
                 };
